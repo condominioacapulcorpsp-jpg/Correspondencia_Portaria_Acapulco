@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assinatura de Entrega</title>
+<style>
+:root{
+  --azul:#1f2b48;
+  --verde:#1fb954;
+  --fundo:#f0f2f5;
+  --branco:rgba(255,255,255,0.9);
+  --cinza:#ccc;
+  --texto:#111;
+}
+
+/* TEMA ESCURO */
+body.tema-escuro{
+  --fundo:rgba(0,0,0,0.85);
+  --branco:rgba(30,30,30,0.9);
+  --azul:#0d47a1;
+  --verde:#1fb954;
+  --cinza:#555;
+  --texto:#f5f5f5;
+}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  margin:0;
+  color:var(--texto);
+
+  background-image:url("fundo-acapulco.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  z-index:-1;
+}
+
+.container{
+  max-width:480px;
+  margin:0 auto;
+  padding:16px;
+}
+.card{
+  background:var(--branco);
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+h1{
+  font-size:20px;
+  margin:0 0 10px 0;
+  color:var(--texto);
+  text-align:center;
+}
+
+/* BOTÃO TEMA */
+#toggleTemaBtn{
+  display:block;
+  margin:0 auto 10px auto;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid var(--cinza);
+  background:var(--azul);
+  color:var(--branco);
+  font-size:13px;
+  cursor:pointer;
+}
+#toggleTemaBtn:hover{
+  background:var(--verde);
+}
+
+label{
+  font-size:14px;
+  font-weight:bold;
+}
+.valor{
+  margin-bottom:8px;
+}
+.preview{
+  width:90px;
+  height:90px;
+  border-radius:10px;
+  border:2px solid #ddd;
+  display:block;
+  object-fit:contain;
+  background:var(--branco);
+}
+.info{
+  font-size:14px;
+  margin:4px 0;
+}
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:14px;
+  color:#fff;
+}
+.badge-pendente{background:#f39c12;}
+.badge-entregue{background:var(--verde);}
+
+/* GRID DE FOTOS */
+.fotos-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  justify-content:flex-start;
+}
+
+/* assinatura existente */
+.preview-assinatura{
+  width:110%;
+  max-width:400px;
+  border-radius:8px;
+  border:3px solid #ddd;
+  display:block;
+  margin:6px auto;
+  object-fit:contain;
+  background:var(--branco);
+}
+
+.actions{
+  margin-top:12px;
+  display:flex;
+  gap:8px;
+}
+button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
+  background:var(--azul);
+  color:var(--branco);
+}
+button:hover{
+  background:var(--verde);
+}
+
+/* ÁREA DE ASSINATURA */
+#areaAssinatura{
+  margin-top:16px;
+}
+#assinaturaCanvas{
+  width:100%;
+  height:210px;
+  border:2px dashed var(--azul);
+  border-radius:10px;
+  touch-action:none;
+  background:var(--branco);
+}
+.assinatura-botoes{
+  display:flex;
+  gap:8px;
+  margin-top:8px;
+}
+.assinatura-botoes button{
+  flex:1;
+}
+
+/* STATUS FIXO */
+#statusBar{
+  position:fixed;
+  bottom:10px;
+  left:0;
+  right:0;
+  text-align:center;
+  font-size:13px;
+  color:#fff;
+}
+#statusText{
+  display:inline-block;
+  background:var(--azul);
+  padding:6px 12px;
+  border-radius:999px;
+}
+
+/* BLOQUEIO */
+.bloqueio{
+  margin-top:16px;
+  padding:10px;
+  border-radius:8px;
+  background:#ffecec;
+  color:#a33;
+  font-size:14px;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <button id="toggleTemaBtn" onclick="alternarTema()">🌗 Alternar tema</button>
+    <h1>Confirmação de Entrega Portaria Acapulco</h1>
+    <div id="dadosEntrega">
+      <div class="valor"><label>Morador:</label> <span id="nomeMorador"></span></div>
+      <div class="valor"><label>Entrega:</label> <span id="tipoEntrega"></span></div>
+      <div class="valor"><label>Recebida em:</label> <span id="dataRecebida"></span></div>
+      <div class="valor"><label>Status:</label> <span id="statusEntrega"></span></div>
+
+      <div class="valor">
+        <label>Fotos da encomenda:</label>
+        <div id="fotosContainer" class="fotos-grid"></div>
+      </div>
+
+      <div class="valor">
+        <label>Assinatura já registrada:</label>
+        <img id="assinaturaExistente" class="preview-assinatura" style="display:none;">
+      </div>
+    </div>
+
+    <!-- Área de assinatura (quando ainda não entregue) -->
+    <div id="areaAssinatura" style="display:none;">
+      <p class="info">Assine abaixo para confirmar o recebimento:</p>
+      <canvas id="assinaturaCanvas"></canvas>
+      <div class="assinatura-botoes">
+        <button id="btnSalvarAssinatura">Salvar Assinatura</button>
+        <button id="btnLimparAssinatura" type="button">Limpar</button>
+      </div>
+    </div>
+
+    <!-- Mensagem quando já tem assinatura -->
+    <div id="mensagemBloqueio" class="bloqueio" style="display:none;">
+      Esta entrega já foi confirmada anteriormente. Em caso de dúvida, contate a portaria.
+    </div>
+  </div>
+</div>
+
+<div id="statusBar">
+  <span id="statusText">Carregando...</span>
+</div>
+
+<script>
+/* ========= CONFIG SUPABASE (NOVO PROJETO) ========= */
+const SUPABASE_URL = "https://jsclpsextnissgtrwnqb.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzY2xwc2V4dG5pc3NndHJ3bnFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNzIzMTYsImV4cCI6MjA3OTg0ODMxNn0.CRzNuqwgWvWQ9tl-QbzUga9gbKmZ8sArNSa1bBbQYxw";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BUCKET_ASSINATURAS = "assinaturas";
+
+let registroAtual = null;
+
+function setStatus(msg){
+  document.getElementById("statusText").textContent = msg;
+}
+
+/* ========= TEMA ========= */
+(function initTema(){
+  const salvo = localStorage.getItem("tema_sistema_condominio");
+  if (salvo === "escuro"){
+    document.body.classList.add("tema-escuro");
+  }
+})();
+
+function alternarTema(){
+  document.body.classList.toggle("tema-escuro");
+  const escuroAtivo = document.body.classList.contains("tema-escuro");
+  localStorage.setItem("tema_sistema_condominio", escuroAtivo ? "escuro" : "claro");
+}
+
+/* ========= ID DA URL ========= */
+function obterIdRegistroDaUrl(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("registro");
+}
+
+/* ========= CARREGAR REGISTRO ========= */
+async function carregarRegistro(){
+  const id = obterIdRegistroDaUrl();
+  if (!id){
+    setStatus("Registro não informado");
+    alert("Link inválido: registro não informado.");
+    return;
+  }
+
+  try{
+    setStatus("Carregando entrega...");
+
+    const { data, error } = await db
+      .from("registros")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error || !data){
+      console.error(error);
+      alert("Não foi possível encontrar esta entrega.");
+      setStatus("Erro ao carregar");
+      return;
+    }
+
+    registroAtual = data;
+    preencherDadosTela(data);
+    decidirSePermiteAssinar(data);
+    setStatus("Pronto");
+  }catch(e){
+    console.error(e);
+    alert("Erro ao carregar a entrega.");
+    setStatus("Erro");
+  }
+}
+
+/* ========= PREENCHER TELA ========= */
+function preencherDadosTela(reg){
+  document.getElementById("nomeMorador").textContent = reg.nome || "-";
+  document.getElementById("tipoEntrega").textContent = reg.entrega || "-";
+
+  const dataReceb = reg.data ? new Date(reg.data).toLocaleString() : "-";
+  document.getElementById("dataRecebida").textContent = dataReceb;
+
+  const spanStatus = document.getElementById("statusEntrega");
+  spanStatus.innerHTML = "";
+  const badge = document.createElement("span");
+  badge.classList.add("badge");
+  if ((reg.status || "").toLowerCase() === "entregue"){
+    badge.classList.add("badge-entregue");
+    badge.textContent = "Entregue";
+  } else {
+    badge.classList.add("badge-pendente");
+    badge.textContent = "Pendente";
+  }
+  spanStatus.appendChild(badge);
+
+  const fotosContainer = document.getElementById("fotosContainer");
+  fotosContainer.innerHTML = "";
+  const urls = [reg.foto_url, reg.foto_url_2, reg.foto_url_3].filter(Boolean);
+  if (urls.length){
+    urls.forEach(u => {
+      const img = document.createElement("img");
+      img.src = u;
+      img.className = "preview";
+      fotosContainer.appendChild(img);
+    });
+  } else {
+    fotosContainer.textContent = "Nenhuma foto registrada.";
+  }
+
+  const ass = document.getElementById("assinaturaExistente");
+  if (reg.assinatura_url){
+    ass.src = reg.assinatura_url;
+    ass.style.display = "block";
+  } else {
+    ass.style.display = "none";
+  }
+}
+
+/* ========= BLOQUEIO/ASSINATURA ========= */
+function decidirSePermiteAssinar(reg){
+  const area = document.getElementById("areaAssinatura");
+  const msgBloqueio = document.getElementById("mensagemBloqueio");
+
+  const jaTemAssinatura = !!reg.assinatura_url;
+  const statusEntregue = (reg.status || "").toLowerCase() === "entregue";
+
+  if (jaTemAssinatura || statusEntregue){
+    area.style.display = "none";
+    msgBloqueio.style.display = "block";
+  } else {
+    area.style.display = "block";
+    msgBloqueio.style.display = "none";
+    prepararCanvasAssinatura();
+  }
+}
+
+/* ========= CANVAS ========= */
+function prepararCanvasAssinatura(){
+  const canvas = document.getElementById("assinaturaCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const rect = canvas.getBoundingClientRect();
+  const largura = rect.width || window.innerWidth - 40;
+  const altura = 220;
+  canvas.width = largura;
+  canvas.height = altura;
+
+  ctx.lineWidth = 2;
+  ctx.lineJoin = ctx.lineCap = "round";
+  ctx.strokeStyle = "#111";
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let desenhando = false;
+  let ultimo = {x:0,y:0};
+
+  function posicao(e){
+    const r = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - r.left,
+      y: e.clientY - r.top
+    };
+  }
+
+  function iniciar(e){
+    desenhando = true;
+    ultimo = posicao(e);
+    e.preventDefault();
+  }
+  function mover(e){
+    if (!desenhando) return;
+    const p = posicao(e);
+    ctx.beginPath();
+    ctx.moveTo(ultimo.x, ultimo.y);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    ultimo = p;
+    e.preventDefault();
+  }
+  function finalizar(e){
+    desenhando = false;
+    if (e) e.preventDefault();
+  }
+
+  canvas.onpointerdown = null;
+  canvas.onpointermove = null;
+  canvas.onpointerup = null;
+  canvas.onpointerleave = null;
+  canvas.onpointercancel = null;
+
+  canvas.addEventListener("pointerdown", iniciar);
+  canvas.addEventListener("pointermove", mover);
+  canvas.addEventListener("pointerup", finalizar);
+  canvas.addEventListener("pointerleave", finalizar);
+  canvas.addEventListener("pointercancel", finalizar);
+
+  document.getElementById("btnLimparAssinatura").onclick = function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  };
+
+  document.getElementById("btnSalvarAssinatura").onclick = salvarAssinatura;
+}
+
+/* ========= UPLOAD BASE64 ========= */
+async function uploadBase64ToStorage(base64, bucket){
+  if (!base64) return null;
+  try {
+    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
+    const base64Data = base64.split(',')[1];
+    const bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+    const { error } = await db
+      .storage
+      .from(bucket)
+      .upload(nome, bytes, {
+        contentType: "image/png",
+        upsert: false
+      });
+
+    if (error){
+      console.error("Erro upload storage:", error);
+      return null;
+    }
+
+    const { data } = db.storage.from(bucket).getPublicUrl(nome);
+    return data.publicUrl;
+  } catch(err){
+    console.error("Erro uploadBase64ToStorage:", err);
+    return null;
+  }
+}
+
+/* ========= SALVAR ASSINATURA ========= */
+async function salvarAssinatura(){
+  if (!registroAtual){
+    alert("Registro inválido.");
+    return;
+  }
+
+  const canvas = document.getElementById("assinaturaCanvas");
+  const base64 = canvas.toDataURL("image/png");
+
+  setStatus("Enviando assinatura...");
+  try{
+    const urlAss = await uploadBase64ToStorage(base64, BUCKET_ASSINATURAS);
+    if (!urlAss){
+      alert("Erro ao enviar a assinatura. Tente novamente.");
+      setStatus("Erro ao enviar");
+      return;
+    }
+
+    const agoraIso = new Date().toISOString();
+
+    const { error } = await db
+      .from("registros")
+      .update({
+        assinatura_url: urlAss,
+        status: "Entregue",
+        baixa_em: agoraIso
+      })
+      .eq("id", registroAtual.id);
+
+    if (error){
+      console.error(error);
+      alert("Erro ao salvar os dados da assinatura.");
+      setStatus("Erro ao salvar");
+      return;
+    }
+
+    registroAtual.assinatura_url = urlAss;
+    registroAtual.status = "Entregue";
+    registroAtual.baixa_em = agoraIso;
+
+    preencherDadosTela(registroAtual);
+    decidirSePermiteAssinar(registroAtual);
+
+    alert("Assinatura registrada com sucesso. Obrigado!");
+    setStatus("Assinatura salva");
+  }catch(e){
+    console.error(e);
+    alert("Erro inesperado ao salvar a assinatura.");
+    setStatus("Erro");
+  }
+}
+
+/* ========= INÍCIO ========= */
+carregarRegistro();
+</script>
+</body>
+</html>
