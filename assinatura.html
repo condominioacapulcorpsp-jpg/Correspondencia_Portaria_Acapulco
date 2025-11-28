@@ -1,525 +1,447 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Assinatura de Entrega</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Confirmação de Recebimento - Condomínio Acapulco</title>
 <style>
-:root{
-  --azul:#1f2b48;
-  --verde:#1fb954;
-  --fundo:#f0f2f5;
-  --branco:rgba(255,255,255,0.9);
-  --cinza:#ccc;
-  --texto:#111;
-}
-
-/* TEMA ESCURO */
-body.tema-escuro{
-  --fundo:rgba(0,0,0,0.85);
-  --branco:rgba(30,30,30,0.9);
-  --azul:#0d47a1;
-  --verde:#1fb954;
-  --cinza:#555;
-  --texto:#f5f5f5;
-}
-
-body{
-  font-family:'Segoe UI',Arial,sans-serif;
-  margin:0;
-  color:var(--texto);
-
-  background-image:url("fundo-acapulco.jpg");
-  background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.35);
-  z-index:-1;
-}
-
-.container{
-  max-width:480px;
-  margin:0 auto;
-  padding:16px;
-}
-.card{
-  background:var(--branco);
-  border-radius:12px;
-  padding:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-h1{
-  font-size:20px;
-  margin:0 0 10px 0;
-  color:var(--texto);
-  text-align:center;
-}
-
-/* BOTÃO TEMA */
-#toggleTemaBtn{
-  display:block;
-  margin:0 auto 10px auto;
-  padding:6px 12px;
-  border-radius:999px;
-  border:1px solid var(--cinza);
-  background:var(--azul);
-  color:var(--branco);
-  font-size:13px;
-  cursor:pointer;
-}
-#toggleTemaBtn:hover{
-  background:var(--verde);
-}
-
-label{
-  font-size:14px;
-  font-weight:bold;
-}
-.valor{
-  margin-bottom:8px;
-}
-.preview{
-  width:90px;
-  height:90px;
-  border-radius:10px;
-  border:2px solid #ddd;
-  display:block;
-  object-fit:contain;
-  background:var(--branco);
-}
-.info{
-  font-size:14px;
-  margin:4px 0;
-}
-.badge{
-  display:inline-block;
-  padding:4px 8px;
-  border-radius:999px;
-  font-size:14px;
-  color:#fff;
-}
-.badge-pendente{background:#f39c12;}
-.badge-entregue{background:var(--verde);}
-
-/* GRID DE FOTOS */
-.fotos-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:16px;
-  justify-content:flex-start;
-}
-
-/* assinatura existente */
-.preview-assinatura{
-  width:110%;
-  max-width:400px;
-  border-radius:8px;
-  border:3px solid #ddd;
-  display:block;
-  margin:6px auto;
-  object-fit:contain;
-  background:var(--branco);
-}
-
-.actions{
-  margin-top:12px;
-  display:flex;
-  gap:8px;
-}
-button{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  font-size:15px;
-  cursor:pointer;
-  background:var(--azul);
-  color:var(--branco);
-}
-button:hover{
-  background:var(--verde);
-}
-
-/* ÁREA DE ASSINATURA */
-#areaAssinatura{
-  margin-top:16px;
-}
-#assinaturaCanvas{
-  width:100%;
-  height:210px;
-  border:2px dashed var(--azul);
-  border-radius:10px;
-  touch-action:none;
-  background:var(--branco);
-}
-.assinatura-botoes{
-  display:flex;
-  gap:8px;
-  margin-top:8px;
-}
-.assinatura-botoes button{
-  flex:1;
-}
-
-/* STATUS FIXO */
-#statusBar{
-  position:fixed;
-  bottom:10px;
-  left:0;
-  right:0;
-  text-align:center;
-  font-size:13px;
-  color:#fff;
-}
-#statusText{
-  display:inline-block;
-  background:var(--azul);
-  padding:6px 12px;
-  border-radius:999px;
-}
-
-/* BLOQUEIO */
-.bloqueio{
-  margin-top:16px;
-  padding:10px;
-  border-radius:8px;
-  background:#ffecec;
-  color:#a33;
-  font-size:14px;
-}
+  :root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --primary:#1f2b48;
+    --accent:#1fb954;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(135deg,#1f2b48,#3b82f6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    color:#111;
+  }
+  .card{
+    width:100%;
+    max-width:650px;
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:0 20px 45px rgba(15,23,42,0.45);
+    padding:16px 16px 18px;
+  }
+  h1{
+    margin:0 0 4px;
+    font-size:20px;
+    color:var(--primary);
+  }
+  h2{
+    margin:10px 0 4px;
+    font-size:16px;
+  }
+  .small{font-size:13px;color:var(--muted);}
+  .muted{color:var(--muted);}
+  .badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    background:#ecfdf3;
+    color:#166534;
+    font-size:12px;
+    font-weight:600;
+  }
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .col{flex:1;min-width:180px;}
+  label{font-size:13px;color:var(--muted);}
+  input,textarea,button{
+    width:100%;
+    font-size:14px;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #dfe6ef;
+  }
+  textarea{resize:vertical;min-height:60px;}
+  button{
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    cursor:pointer;
+  }
+  button.secondary{
+    background:transparent;
+    color:var(--primary);
+    border:1px solid #d0d7e6;
+  }
+  button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+  .photos{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .thumb{
+    width:92px;
+    height:72px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid #e5ecf6;
+  }
+  canvas{
+    width:100%;
+    max-width:100%;
+    border-radius:10px;
+    border:1px dashed #cbd5e1;
+    background:#ffffff;
+    touch-action:none;
+  }
+  .actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .center{text-align:center;}
+  .ok{
+    color:#15803d;
+    font-weight:600;
+  }
+  .error{
+    color:#b91c1c;
+    font-weight:600;
+  }
 </style>
 
+<!-- Supabase JS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<div class="container">
-  <div class="card">
-    <button id="toggleTemaBtn" onclick="alternarTema()">🌗 Alternar tema</button>
-    <h1>Confirmação de Entrega Portaria Acapulco</h1>
-    <div id="dadosEntrega">
-      <div class="valor"><label>Morador:</label> <span id="nomeMorador"></span></div>
-      <div class="valor"><label>Entrega:</label> <span id="tipoEntrega"></span></div>
-      <div class="valor"><label>Recebida em:</label> <span id="dataRecebida"></span></div>
-      <div class="valor"><label>Status:</label> <span id="statusEntrega"></span></div>
+<div class="card">
+  <header style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+    <div>
+      <h1>Confirmação de Recebimento</h1>
+      <div class="small muted">Condomínio Acapulco - Portaria</div>
+    </div>
+    <div id="statusTag" class="badge">Carregando...</div>
+  </header>
 
-      <div class="valor">
-        <label>Fotos da encomenda:</label>
-        <div id="fotosContainer" class="fotos-grid"></div>
+  <section style="margin-top:10px">
+    <div id="infoRegistro" class="small muted">Buscando informações do registro...</div>
+  </section>
+
+  <section style="margin-top:12px;display:none" id="detalhesArea">
+    <h2>Dados da entrega</h2>
+    <div class="row">
+      <div class="col">
+        <label>Nome do morador</label>
+        <div id="campoNome" style="font-weight:600;margin-top:2px"></div>
       </div>
-
-      <div class="valor">
-        <label>Assinatura já registrada:</label>
-        <img id="assinaturaExistente" class="preview-assinatura" style="display:none;">
+      <div class="col">
+        <label>Apartamento</label>
+        <div id="campoApto" style="font-weight:600;margin-top:2px"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Descrição / Entrega</label>
+        <div id="campoEntrega" style="margin-top:2px"></div>
+      </div>
+      <div class="col">
+        <label>Status</label>
+        <div id="campoStatus" style="margin-top:2px;font-weight:600"></div>
       </div>
     </div>
 
-    <!-- Área de assinatura (quando ainda não entregue) -->
-    <div id="areaAssinatura" style="display:none;">
-      <p class="info">Assine abaixo para confirmar o recebimento:</p>
-      <canvas id="assinaturaCanvas"></canvas>
-      <div class="assinatura-botoes">
-        <button id="btnSalvarAssinatura">Salvar Assinatura</button>
-        <button id="btnLimparAssinatura" type="button">Limpar</button>
-      </div>
+    <div style="margin-top:10px">
+      <label>Fotos registradas na portaria</label>
+      <div id="fotosArea" class="photos"></div>
     </div>
+  </section>
 
-    <!-- Mensagem quando já tem assinatura -->
-    <div id="mensagemBloqueio" class="bloqueio" style="display:none;">
-      Esta entrega já foi confirmada anteriormente. Em caso de dúvida, contate a portaria.
+  <section style="margin-top:16px;display:none" id="assinaturaArea">
+    <h2>Assinatura do morador</h2>
+    <p class="small">
+      Confirme que você recebeu a encomenda assinando no quadro abaixo.
+      Em caso de dúvida, fale com a portaria.
+    </p>
+    <canvas id="signCanvas" width="900" height="320"></canvas>
+    <div class="actions">
+      <button id="btnLimpar">Limpar assinatura</button>
+      <button class="secondary" id="btnCancelar">Cancelar</button>
+      <button id="btnConfirmar">Confirmar recebimento</button>
     </div>
-  </div>
-</div>
+    <div id="msgErro" class="small error" style="margin-top:6px;display:none"></div>
+  </section>
 
-<div id="statusBar">
-  <span id="statusText">Carregando...</span>
+  <section style="margin-top:16px;display:none" id="finalArea">
+    <div class="center">
+      <div id="finalMsg" class="ok">Recebimento confirmado com sucesso!</div>
+      <div class="small muted" id="finalObs" style="margin-top:4px"></div>
+    </div>
+  </section>
+
+  <footer class="small muted" style="margin-top:14px;text-align:center">
+    Sistema de Correspondência - Condomínio Acapulco
+  </footer>
 </div>
 
 <script>
-/* ========= CONFIG SUPABASE (NOVO PROJETO) ========= */
+// ====== CONFIG SUPABASE (MESMO DO INDEX) ======
 const SUPABASE_URL = "https://jsclpsextnissgtrwnqb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzY2xwc2V4dG5pc3NndHJ3bnFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNzIzMTYsImV4cCI6MjA3OTg0ODMxNn0.CRzNuqwgWvWQ9tl-QbzUga9gbKmZ8sArNSa1bBbQYxw";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const BUCKET_ASSINATURAS = "assinaturas";
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ====== HELPER: pegar param ?registro= ======
+function getRegistroIdFromURL(){
+  const p = new URLSearchParams(window.location.search);
+  return p.get("registro");
+}
+
+function escapeHtml(s=""){
+  return String(s).replace(/[&<>"']/g, c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  })[c]);
+}
+
+// ====== ELEMENTOS ======
+const statusTag = document.getElementById("statusTag");
+const infoRegistro = document.getElementById("infoRegistro");
+const detalhesArea = document.getElementById("detalhesArea");
+const assinaturaArea = document.getElementById("assinaturaArea");
+const finalArea = document.getElementById("finalArea");
+const campoNome = document.getElementById("campoNome");
+const campoApto = document.getElementById("campoApto");
+const campoEntrega = document.getElementById("campoEntrega");
+const campoStatus = document.getElementById("campoStatus");
+const fotosArea = document.getElementById("fotosArea");
+const signCanvas = document.getElementById("signCanvas");
+const btnLimpar = document.getElementById("btnLimpar");
+const btnCancelar = document.getElementById("btnCancelar");
+const btnConfirmar = document.getElementById("btnConfirmar");
+const msgErro = document.getElementById("msgErro");
+const finalMsg = document.getElementById("finalMsg");
+const finalObs = document.getElementById("finalObs");
 
 let registroAtual = null;
 
-function setStatus(msg){
-  document.getElementById("statusText").textContent = msg;
-}
-
-/* ========= TEMA ========= */
-(function initTema(){
-  const salvo = localStorage.getItem("tema_sistema_condominio");
-  if (salvo === "escuro"){
-    document.body.classList.add("tema-escuro");
-  }
-})();
-
-function alternarTema(){
-  document.body.classList.toggle("tema-escuro");
-  const escuroAtivo = document.body.classList.contains("tema-escuro");
-  localStorage.setItem("tema_sistema_condominio", escuroAtivo ? "escuro" : "claro");
-}
-
-/* ========= ID DA URL ========= */
-function obterIdRegistroDaUrl(){
-  const params = new URLSearchParams(window.location.search);
-  return params.get("registro");
-}
-
-/* ========= CARREGAR REGISTRO ========= */
+// ====== CARREGAR DADOS DO REGISTRO ======
 async function carregarRegistro(){
-  const id = obterIdRegistroDaUrl();
-  if (!id){
-    setStatus("Registro não informado");
-    alert("Link inválido: registro não informado.");
+  const id = getRegistroIdFromURL();
+  if(!id){
+    statusTag.textContent = "Erro";
+    statusTag.style.background = "#fee2e2";
+    statusTag.style.color = "#b91c1c";
+    infoRegistro.textContent = "Nenhum identificador de registro foi informado.";
     return;
   }
 
   try{
-    setStatus("Carregando entrega...");
-
-    const { data, error } = await db
+    statusTag.textContent = "Carregando...";
+    const { data, error } = await supa
       .from("registros")
       .select("*")
       .eq("id", id)
       .single();
 
-    if (error || !data){
+    if(error || !data){
       console.error(error);
-      alert("Não foi possível encontrar esta entrega.");
-      setStatus("Erro ao carregar");
+      statusTag.textContent = "Erro";
+      statusTag.style.background = "#fee2e2";
+      statusTag.style.color = "#b91c1c";
+      infoRegistro.textContent = "Registro não encontrado. Verifique com a portaria.";
       return;
     }
 
     registroAtual = data;
-    preencherDadosTela(data);
-    decidirSePermiteAssinar(data);
-    setStatus("Pronto");
+    preencherTela(data);
   }catch(e){
     console.error(e);
-    alert("Erro ao carregar a entrega.");
-    setStatus("Erro");
+    statusTag.textContent = "Erro";
+    statusTag.style.background = "#fee2e2";
+    statusTag.style.color = "#b91c1c";
+    infoRegistro.textContent = "Erro ao carregar informações. Tente novamente mais tarde.";
   }
 }
 
-/* ========= PREENCHER TELA ========= */
-function preencherDadosTela(reg){
-  document.getElementById("nomeMorador").textContent = reg.nome || "-";
-  document.getElementById("tipoEntrega").textContent = reg.entrega || "-";
+function preencherTela(rec){
+  detalhesArea.style.display = "block";
+  infoRegistro.textContent = "Confira os dados abaixo e assine para confirmar o recebimento.";
 
-  const dataReceb = reg.data ? new Date(reg.data).toLocaleString() : "-";
-  document.getElementById("dataRecebida").textContent = dataReceb;
+  campoNome.textContent = rec.nome || "-";
+  campoApto.textContent = rec.apartamento || "-";
+  campoEntrega.textContent = rec.entrega || "-";
+  campoStatus.textContent = rec.status || "Pendente";
 
-  const spanStatus = document.getElementById("statusEntrega");
-  spanStatus.innerHTML = "";
-  const badge = document.createElement("span");
-  badge.classList.add("badge");
-  if ((reg.status || "").toLowerCase() === "entregue"){
-    badge.classList.add("badge-entregue");
-    badge.textContent = "Entregue";
+  // status tag
+  if((rec.status||"").toLowerCase() === "entregue"){
+    statusTag.textContent = "Já entregue";
+    statusTag.style.background = "#dcfce7";
+    statusTag.style.color = "#166534";
   } else {
-    badge.classList.add("badge-pendente");
-    badge.textContent = "Pendente";
+    statusTag.textContent = "Pendente";
+    statusTag.style.background = "#fef9c3";
+    statusTag.style.color = "#854d0e";
   }
-  spanStatus.appendChild(badge);
 
-  const fotosContainer = document.getElementById("fotosContainer");
-  fotosContainer.innerHTML = "";
-  const urls = [reg.foto_url, reg.foto_url_2, reg.foto_url_3].filter(Boolean);
-  if (urls.length){
-    urls.forEach(u => {
+  fotosArea.innerHTML = "";
+  [rec.foto_url, rec.foto_url_2, rec.foto_url_3].forEach(url=>{
+    if(url){
       const img = document.createElement("img");
-      img.src = u;
-      img.className = "preview";
-      fotosContainer.appendChild(img);
-    });
+      img.src = url;
+      img.className = "thumb";
+      fotosArea.appendChild(img);
+    }
+  });
+
+  // Se ainda não está entregue, mostrar área de assinatura
+  if((rec.status||"").toLowerCase() === "pendente"){
+    assinaturaArea.style.display = "block";
+    inicializarCanvas();
   } else {
-    fotosContainer.textContent = "Nenhuma foto registrada.";
-  }
-
-  const ass = document.getElementById("assinaturaExistente");
-  if (reg.assinatura_url){
-    ass.src = reg.assinatura_url;
-    ass.style.display = "block";
-  } else {
-    ass.style.display = "none";
-  }
-}
-
-/* ========= BLOQUEIO/ASSINATURA ========= */
-function decidirSePermiteAssinar(reg){
-  const area = document.getElementById("areaAssinatura");
-  const msgBloqueio = document.getElementById("mensagemBloqueio");
-
-  const jaTemAssinatura = !!reg.assinatura_url;
-  const statusEntregue = (reg.status || "").toLowerCase() === "entregue";
-
-  if (jaTemAssinatura || statusEntregue){
-    area.style.display = "none";
-    msgBloqueio.style.display = "block";
-  } else {
-    area.style.display = "block";
-    msgBloqueio.style.display = "none";
-    prepararCanvasAssinatura();
+    assinaturaArea.style.display = "none";
+    finalArea.style.display = "block";
+    finalMsg.textContent = "Este registro já consta como ENTREGUE no sistema.";
+    finalObs.textContent = "Em caso de dúvida, entre em contato com a portaria.";
   }
 }
 
-/* ========= CANVAS ========= */
-function prepararCanvasAssinatura(){
-  const canvas = document.getElementById("assinaturaCanvas");
-  const ctx = canvas.getContext("2d");
+// ====== CANVAS DE ASSINATURA ======
+let drawing = false;
+let last = {x:0,y:0};
+let ctx = null;
 
-  const rect = canvas.getBoundingClientRect();
-  const largura = rect.width || window.innerWidth - 40;
-  const altura = 220;
-  canvas.width = largura;
-  canvas.height = altura;
+function inicializarCanvas(){
+  ctx = signCanvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,signCanvas.width,signCanvas.height);
+  ctx.strokeStyle = "#111827";
+  ctx.lineWidth = 3;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
 
-  ctx.lineWidth = 2;
-  ctx.lineJoin = ctx.lineCap = "round";
-  ctx.strokeStyle = "#111";
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  let desenhando = false;
-  let ultimo = {x:0,y:0};
-
-  function posicao(e){
-    const r = canvas.getBoundingClientRect();
+  function getPos(e){
+    const rect = signCanvas.getBoundingClientRect();
+    let clientX, clientY;
+    if(e.touches && e.touches.length>0){
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    const scaleX = signCanvas.width / rect.width;
+    const scaleY = signCanvas.height / rect.height;
     return {
-      x: e.clientX - r.left,
-      y: e.clientY - r.top
+      x:(clientX - rect.left)*scaleX,
+      y:(clientY - rect.top)*scaleY
     };
   }
 
-  function iniciar(e){
-    desenhando = true;
-    ultimo = posicao(e);
+  function startDraw(e){
     e.preventDefault();
+    drawing = true;
+    last = getPos(e);
   }
-  function mover(e){
-    if (!desenhando) return;
-    const p = posicao(e);
+  function moveDraw(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
     ctx.beginPath();
-    ctx.moveTo(ultimo.x, ultimo.y);
-    ctx.lineTo(p.x, p.y);
+    ctx.moveTo(last.x,last.y);
+    ctx.lineTo(p.x,p.y);
     ctx.stroke();
-    ultimo = p;
-    e.preventDefault();
+    last = p;
   }
-  function finalizar(e){
-    desenhando = false;
-    if (e) e.preventDefault();
+  function endDraw(e){
+    drawing = false;
   }
 
-  canvas.onpointerdown = null;
-  canvas.onpointermove = null;
-  canvas.onpointerup = null;
-  canvas.onpointerleave = null;
-  canvas.onpointercancel = null;
+  signCanvas.addEventListener("pointerdown", startDraw);
+  signCanvas.addEventListener("pointermove", moveDraw);
+  signCanvas.addEventListener("pointerup", endDraw);
+  signCanvas.addEventListener("pointerleave", endDraw);
 
-  canvas.addEventListener("pointerdown", iniciar);
-  canvas.addEventListener("pointermove", mover);
-  canvas.addEventListener("pointerup", finalizar);
-  canvas.addEventListener("pointerleave", finalizar);
-  canvas.addEventListener("pointercancel", finalizar);
-
-  document.getElementById("btnLimparAssinatura").onclick = function(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-  };
-
-  document.getElementById("btnSalvarAssinatura").onclick = salvarAssinatura;
+  // suporte touch antigo (se quiser)
+  signCanvas.addEventListener("touchstart", startDraw, {passive:false});
+  signCanvas.addEventListener("touchmove", moveDraw, {passive:false});
+  signCanvas.addEventListener("touchend", endDraw);
 }
 
-/* ========= UPLOAD BASE64 ========= */
-async function uploadBase64ToStorage(base64, bucket){
-  if (!base64) return null;
-  try {
-    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
-    const base64Data = base64.split(',')[1];
-    const bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+btnLimpar.addEventListener("click", ()=>{
+  if(!ctx) return;
+  ctx.clearRect(0,0,signCanvas.width,signCanvas.height);
+  ctx.fillStyle="#ffffff";
+  ctx.fillRect(0,0,signCanvas.width,signCanvas.height);
+  msgErro.style.display = "none";
+});
 
-    const { error } = await db
-      .storage
-      .from(bucket)
-      .upload(nome, bytes, {
-        contentType: "image/png",
-        upsert: false
-      });
+btnCancelar.addEventListener("click", ()=>{
+  // Apenas volta a mostrar mensagem
+  msgErro.style.display = "none";
+  alert("Assinatura cancelada. Caso não tenha recebido o objeto, informe a portaria.");
+});
 
-    if (error){
-      console.error("Erro upload storage:", error);
-      return null;
-    }
-
-    const { data } = db.storage.from(bucket).getPublicUrl(nome);
-    return data.publicUrl;
-  } catch(err){
-    console.error("Erro uploadBase64ToStorage:", err);
-    return null;
-  }
-}
-
-/* ========= SALVAR ASSINATURA ========= */
-async function salvarAssinatura(){
-  if (!registroAtual){
-    alert("Registro inválido.");
+// ====== CONFIRMAR RECEBIMENTO ======
+btnConfirmar.addEventListener("click", async ()=>{
+  if(!registroAtual){
+    msgErro.textContent = "Registro não carregado. Recarregue a página.";
+    msgErro.style.display = "block";
     return;
   }
 
-  const canvas = document.getElementById("assinaturaCanvas");
-  const base64 = canvas.toDataURL("image/png");
+  // Checar se há alguma assinatura (canvas totalmente em branco é chato testar,
+  // mas aqui assumimos que o morador realmente assinou).
+  const dataUrl = signCanvas.toDataURL("image/png");
+  if(!dataUrl || dataUrl.length<100){
+    msgErro.textContent = "Por favor, faça a assinatura antes de confirmar.";
+    msgErro.style.display = "block";
+    return;
+  }
 
-  setStatus("Enviando assinatura...");
+  msgErro.style.display = "none";
+  btnConfirmar.disabled = true;
+  btnConfirmar.textContent = "Enviando...";
+
   try{
-    const urlAss = await uploadBase64ToStorage(base64, BUCKET_ASSINATURAS);
-    if (!urlAss){
-      alert("Erro ao enviar a assinatura. Tente novamente.");
-      setStatus("Erro ao enviar");
-      return;
-    }
-
-    const agoraIso = new Date().toISOString();
-
-    const { error } = await db
+    const { error } = await supa
       .from("registros")
       .update({
-        assinatura_url: urlAss,
         status: "Entregue",
-        baixa_em: agoraIso
+        assinatura: dataUrl,
+        data_entrega: new Date().toISOString()
       })
       .eq("id", registroAtual.id);
 
-    if (error){
+    if(error){
       console.error(error);
-      alert("Erro ao salvar os dados da assinatura.");
-      setStatus("Erro ao salvar");
+      msgErro.textContent = "Erro ao salvar a confirmação. Tente novamente.";
+      msgErro.style.display = "block";
+      btnConfirmar.disabled = false;
+      btnConfirmar.textContent = "Confirmar recebimento";
       return;
     }
 
-    registroAtual.assinatura_url = urlAss;
-    registroAtual.status = "Entregue";
-    registroAtual.baixa_em = agoraIso;
-
-    preencherDadosTela(registroAtual);
-    decidirSePermiteAssinar(registroAtual);
-
-    alert("Assinatura registrada com sucesso. Obrigado!");
-    setStatus("Assinatura salva");
+    // sucesso
+    assinaturaArea.style.display = "none";
+    finalArea.style.display = "block";
+    statusTag.textContent = "Entregue";
+    statusTag.style.background = "#dcfce7";
+    statusTag.style.color = "#166534";
+    finalMsg.textContent = "Recebimento confirmado com sucesso!";
+    finalObs.textContent = "Obrigado. Esta confirmação já foi registrada no sistema da portaria.";
   }catch(e){
     console.error(e);
-    alert("Erro inesperado ao salvar a assinatura.");
-    setStatus("Erro");
+    msgErro.textContent = "Erro inesperado ao salvar. Tente novamente.";
+    msgErro.style.display = "block";
+    btnConfirmar.disabled = false;
+    btnConfirmar.textContent = "Confirmar recebimento";
   }
-}
+});
 
-/* ========= INÍCIO ========= */
+// ====== INÍCIO ======
 carregarRegistro();
 </script>
 </body>
