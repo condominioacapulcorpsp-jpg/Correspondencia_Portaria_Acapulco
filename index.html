@@ -1,1034 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sistema de Correspondência - Condomínio Acapulco</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portaria Acapulco</title>
 <style>
-  :root{ --bg:#f4f7fb; --card:#ffffff; --primary:#1f2b48; --accent:#1fb954; --muted:#6b7280; }
-  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-  body{margin:0;background:var(--bg);color:#111}
-  header{background:linear-gradient(90deg,var(--primary),#44557a);color:#fff;padding:14px 18px}
-  header h1{margin:0;font-size:18px}
-  .container{max-width:1100px;margin:18px auto;padding:12px}
-  .card{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(20,30,50,0.08);}
-  nav.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-  nav.tabs button{background:transparent;border:1px solid transparent;padding:8px 12px;border-radius:8px;cursor:pointer}
-  nav.tabs button.active{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 3px 8px rgba(25,40,60,0.06)}
-  .grid{display:grid;grid-template-columns:1fr 420px;gap:12px}
-  .form-row{display:flex;gap:8px}
-  label{font-size:13px;color:var(--muted)}
-  input,select,textarea,button{font-size:14px;padding:8px;border-radius:8px;border:1px solid #dfe6ef}
-  input:focus,select:focus,textarea:focus{outline:2px solid rgba(31,43,72,0.07)}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:8px;border-bottom:1px solid #eef3f8;text-align:left}
-  .thumb{width:64px;height:48px;object-fit:cover;border-radius:6px;border:1px solid #e6eef8}
-  .actions button{margin-right:6px}
-  .small{font-size:12px;color:var(--muted)}
-  .records-list{max-height:540px;overflow:auto;padding-top:8px}
-  .record-card{display:flex;gap:12px;align-items:flex-start;padding:8px;border-radius:8px;border:1px solid #eef3f8;margin-bottom:8px;background:#fff}
-  .record-thumb{width:128px;height:96px;object-fit:cover;border-radius:6px}
-  .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:#eef6ff;color:#0f1722;font-weight:600;font-size:12px}
-  .muted{color:var(--muted)}
-  .right{display:flex;flex-direction:column;gap:8px}
-  .btn{background:var(--primary);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
-  .btn.ghost{background:transparent;border:1px solid #d0d7e6;color:var(--primary)}
-  .btn.warn{background:#f59e0b}
-  .btn.danger{background:#ef4444}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;padding:18px;z-index:9999}
-  .modal{background:#fff;border-radius:8px;padding:12px;max-width:900px;width:100%}
-  canvas{border:1px dashed #ccd5e6;border-radius:8px;background:#fff}
-  footer{margin-top:14px;text-align:center;color:var(--muted);font-size:13px}
-  @media (max-width:900px){.grid{grid-template-columns:1fr} .record-thumb{width:96px;height:72px}}
-
-  /* TELA DE LOGIN */
-  #loginWrapper{
-    max-width:380px;margin:40px auto;padding:16px;
-    background:var(--card);border-radius:12px;
-    box-shadow:0 10px 30px rgba(15,23,42,0.25);
-  }
-  #loginWrapper h2{margin-top:0;font-size:18px;color:var(--primary)}
-  #currentUserInfo{font-size:12px;color:var(--muted);margin-left:auto}
+/* === Estilos básicos === */
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+input, button, select { padding: 6px; margin: 2px 0; }
+button.btn { cursor: pointer; }
+button.ghost { background: transparent; border: 1px solid #ccc; }
+button.danger { background: #e74c3c; color: #fff; border: none; }
+.thumb { width: 80px; height: 80px; object-fit: cover; border: 1px solid #ccc; }
+.overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; }
+.modal { background:#fff; padding:16px; border-radius:6px; max-width:90%; max-height:90%; overflow:auto; }
+.tabs button.active { font-weight:bold; }
 </style>
-
-<!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header>
-  <div style="display:flex;align-items:center;gap:10px;justify-content:space-between">
-    <h1>Condomínio Acapulco — Sistema de Correspondência</h1>
-    <div id="currentUserInfo" style="display:none"></div>
-  </div>
-</header>
 
-<!-- TELA DE LOGIN -->
-<div id="loginWrapper">
-  <h2>Acesso ao Sistema</h2>
-  <p class="small">Informe login e senha para acessar.</p>
-  <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-    <input id="loginUser" placeholder="Usuário" />
-    <input id="loginPass" placeholder="Senha" type="password" />
-    <button class="btn" id="btnLogin">Entrar</button>
-    <p class="small">Padrão inicial: usuário <strong>admin</strong> / senha <strong>Ckl253115@</strong></p>
-  </div>
+<h1>Portaria Acapulco</h1>
+
+<!-- === TABS === -->
+<div class="tabs">
+  <button data-tab="moradores" class="active">Moradores</button>
+  <button data-tab="registros">Registros</button>
+  <button data-tab="relatorio">Relatório</button>
+  <button data-tab="usuarios">Usuários</button>
 </div>
 
-<!-- APLICAÇÃO PRINCIPAL (ESCONDIDA ATÉ LOGAR) -->
-<div class="container" id="appWrapper" style="display:none">
-  <div class="card">
-    <nav class="tabs" role="tablist">
-      <button data-tab="moradores" class="active">Moradores</button>
-      <button data-tab="correspondencia">Correspondência</button>
-      <button data-tab="registros">Registros</button>
-      <button data-tab="relatorio">Relatório</button>
-      <button data-tab="usuarios" id="tabUsuarios" style="display:none">Usuários</button>
-      <button class="btn ghost" id="btnLogout" style="margin-left:auto">Sair</button>
-    </nav>
+<!-- === SECTIONS === -->
+<div id="moradores">
+  <h2>Cadastro de Moradores</h2>
+  <input id="nomeInput" placeholder="Nome">
+  <input id="aptInput" placeholder="Apartamento">
+  <input id="whatsappInput" placeholder="Whatsapp">
+  <button id="salvarMoradorBtn" class="btn">Salvar</button>
+  <button id="limparFormularioBtn" class="btn ghost">Limpar</button>
+  <div id="moradoresList"></div>
 
-    <section id="moradores" class="tabpanel">
-      <div class="grid">
-        <div>
-          <div class="card">
-            <h3>Cadastro de Morador (Sincronizado)</h3>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-              <input id="nome" placeholder="Nome completo" />
-              <input id="apartamento" placeholder="Apartamento (número)" />
+  <h2>Transportadoras</h2>
+  <input id="novaTransportadora" placeholder="Nova transportadora">
+  <button id="addTransportadoraBtn" class="btn">Adicionar</button>
+  <div id="transportList"></div>
 
-              <!-- APENAS DDD+NÚMERO, DDI 55 automático -->
-              <input id="whatsapp" placeholder="WhatsApp (APENAS DDD+número, ex: 11999999999)" />
-
-              <div style="display:flex;gap:8px">
-                <button class="btn" id="salvarMorador">Salvar</button>
-                <button class="btn ghost" id="limparFormulario">Limpar</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:12px">
-            <h3>Lista de Moradores</h3>
-            <div style="margin-top:8px">
-              <table id="tblMoradores">
-                <thead><tr><th>Nome</th><th>Apto</th><th>WhatsApp</th><th></th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <p class="small" id="statusMoradores"></p>
-          </div>
-        </div>
-
-        <div>
-          <div class="card">
-            <h3>Transportadoras (sincronizadas)</h3>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <select id="transportadorasSelect"></select>
-              <input id="novaTransportadora" placeholder="Adicionar transportadora" />
-              <button class="btn" id="addTransportadora">Adicionar</button>
-            </div>
-            <p class="small" style="margin-top:8px">
-              Essas opções aparecem na aba de Correspondência.<br>
-              <span id="statusTransportadoras"></span>
-            </p>
-          </div>
-
-          <div class="card" style="margin-top:12px">
-            <h3>Dicas</h3>
-            <ul class="small">
-              <li>Permita o uso da câmera quando solicitado.</li>
-              <li>WhatsApp abrirá via <code>intent://</code> para focar no app.</li>
-              <li>Dados são salvos no Supabase + cópia local no navegador.</li>
-              <li>Registros de entrega também são gravados no Supabase.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="correspondencia" class="tabpanel" style="display:none;margin-top:12px">
-      <div class="card">
-        <h3>Registrar Correspondência</h3>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
-          <div style="flex:1;min-width:260px">
-            <label>Morador</label>
-            <select id="selectMorador"></select>
-          </div>
-          <div style="width:260px">
-            <label>Transportadora</label>
-            <select id="selectTransportadora"></select>
-          </div>
-          <div style="width:160px">
-            <label>Tipo / Observação</label>
-            <input id="obs" placeholder="Ex: Envelope / Caixa" />
-          </div>
-        </div>
-
-        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-          <button class="btn" id="abrirCamera">Abrir câmera</button>
-          <button class="btn ghost" id="capturarFoto" disabled>Capturar foto</button>
-          <button class="btn ghost" id="fecharCamera" style="display:none">Fechar câmera</button>
-          <div class="small muted" id="cameraStatus">Câmera: fechada</div>
-        </div>
-
-        <div id="camArea" style="margin-top:12px;display:none">
-          <video id="video" autoplay playsinline style="width:100%;max-width:640px;border-radius:8px;border:1px solid #e6eef8"></video>
-        </div>
-
-        <div id="fotosCapturadas" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"></div>
-
-        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
-          <button class="btn" id="salvarCorrespondencia">Salvar registro</button>
-          <span class="small muted" id="statusSupabase"></span>
-        </div>
-      </div>
-    </section>
-
-    <section id="registros" class="tabpanel" style="display:none;margin-top:12px">
-      <div class="card">
-        <h3>Registros</h3>
-        <div class="records-list" id="listaRegistros"></div>
-      </div>
-    </section>
-
-    <section id="relatorio" class="tabpanel" style="display:none;margin-top:12px">
-      <div class="card">
-        <h3>Relatório</h3>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <div class="card" style="padding:10px;min-width:160px">
-            <div class="muted small">Recebidas</div>
-            <div id="numRecebidas" style="font-size:20px;font-weight:700">0</div>
-          </div>
-          <div class="card" style="padding:10px;min-width:160px">
-            <div class="muted small">Entregues</div>
-            <div id="numEntregues" style="font-size:20px;font-weight:700">0</div>
-          </div>
-          <div class="card" style="padding:10px;min-width:160px">
-            <div class="muted small">Pendentes</div>
-            <div id="numPendentes" style="font-size:20px;font-weight:700">0</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABA DE USUÁRIOS (somente admin) -->
-    <section id="usuarios" class="tabpanel" style="display:none;margin-top:12px">
-      <div class="card">
-        <h3>Gerenciamento de Usuários</h3>
-        <p class="small">Somente o usuário <strong>admin</strong> pode criar/excluir usuários.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          <input id="novoUsuarioLogin" placeholder="Login do usuário" />
-          <input id="novoUsuarioNome" placeholder="Nome completo" />
-          <input id="novoUsuarioSenha" placeholder="Senha" type="password" />
-          <button class="btn" id="btnAddUsuario">Adicionar</button>
-        </div>
-        <div style="margin-top:12px">
-          <table style="width:100%">
-            <thead><tr><th>Login</th><th>Nome</th><th></th></tr></thead>
-            <tbody id="tblUsuarios"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <footer class="small">Feito para Condomínio Acapulco — teste em navegador moderno (Chrome/Edge/Firefox). Dados no Supabase + cópia local.</footer>
+  <h2>Câmera</h2>
+  <button id="abrirCameraBtn" class="btn">Abrir Câmera</button>
+  <button id="capturarFotoBtn" class="btn" disabled>Capturar Foto</button>
+  <button id="fecharCameraBtn" class="btn ghost" style="display:none">Fechar Câmera</button>
+  <div id="cameraStatus">Câmera: fechada</div>
+  <video id="video" autoplay playsinline style="width:100%; max-width:400px;"></video>
+  <div id="fotosCapturadas" style="display:flex;gap:8px;flex-wrap:wrap"></div>
 </div>
 
-<!-- Modal: assinatura e edição -->
-<div id="modalArea" style="display:none"></div>
+<div id="registros" style="display:none">
+  <h2>Registros de Entregas</h2>
+  <select id="selectMorador"></select>
+  <select id="selectTransportadora"></select>
+  <input id="obsInput" placeholder="Observações">
+  <button id="salvarCorrespondenciaBtn" class="btn">Salvar Registro</button>
+  <div id="statusSupabase"></div>
+  <div id="recordsList"></div>
+</div>
+
+<div id="relatorio" style="display:none">
+  <h2>Relatório</h2>
+  <div id="relatorioContent"></div>
+</div>
+
+<div id="usuarios" style="display:none">
+  <h2>Usuários</h2>
+  <table id="tblUsuarios" border="1"></table>
+  <h3>Novo Usuário</h3>
+  <input id="novoUsuarioLogin" placeholder="Login">
+  <input id="novoUsuarioNome" placeholder="Nome">
+  <input id="novoUsuarioSenha" placeholder="Senha" type="password">
+  <button id="btnAddUsuario" class="btn">Adicionar Usuário</button>
+</div>
+
+<div id="modalArea"></div>
 
 <script>
-// ====== SUPABASE CONFIG ======
-const SUPABASE_URL = "https://jsclpsextnissgtrwnqb.supabase.co";
-const SUPABASE_KEY = "sb_publishable_uc3osgPxdDZyHJdzn_z37Q_QH0VQOc8";
-let supa = null;
-try{
-  supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-}catch(e){
-  console.error("Erro ao criar cliente Supabase:", e);
-}
+// ====== VARIÁVEIS GLOBAIS ======
+let residents=[], transports=[], records=[], users=[], capturedImages=[], editingResidentId=null;
+let stream=null, currentUser={id:'1', name:'Admin', username:'admin'};
+const supa=null; // Substituir pelo seu client Supabase
+const BUCKET_FOTOS="fotos";
 
-// ====== STORAGE KEYS (LOCAL) ======
-const STORAGE_KEYS = {
-  RESIDENTS:'residents_v1',
-  RECORDS:'records_v1',
-  TRANSPORTS:'transports_v1',
-  USERS:'users_v1',
-  CURRENT_USER:'current_user_v1'
-}
-
-// ====== ESTADO GLOBAL ======
-let residents = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESIDENTS) || '[]')
-let records = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECORDS) || '[]')
-let transports = JSON.parse(localStorage.getItem(STORAGE_KEYS.TRANSPORTS) || '[]')
-let users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]')
-let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null')
-
-// Usuário padrão admin
-if(!users.length){
-  users = [{
-    id: uuid(),
-    username: 'admin',
-    name: 'Administrador',
-    password: 'Ckl253115@'
-  }]
-}
-
-// default transports se não vier do Supabase
-if(!transports.length){ transports = ['Jadlog','Correios','Delivery Local','Transportadora X'] }
-
-// UI refs principais
-const tabs = document.querySelectorAll('nav.tabs button[data-tab]')
-const sections = document.querySelectorAll('.tabpanel')
-const tblBody = document.querySelector('#tblMoradores tbody')
-const selectMorador = document.getElementById('selectMorador')
-const selectTransportadora = document.getElementById('selectTransportadora')
-const transportadorasSelect = document.getElementById('transportadorasSelect')
-const salvarMoradorBtn = document.getElementById('salvarMorador')
-const limparFormularioBtn = document.getElementById('limparFormulario')
-const nomeInput = document.getElementById('nome')
-const aptInput = document.getElementById('apartamento')
-const whatsappInput = document.getElementById('whatsapp')
-const novaTransportadora = document.getElementById('novaTransportadora')
-const addTransportadoraBtn = document.getElementById('addTransportadora')
-
-const statusMoradores = document.getElementById('statusMoradores')
-const statusTransportadoras = document.getElementById('statusTransportadoras')
-
-const abrirCameraBtn = document.getElementById('abrirCamera')
-const capturarFotoBtn = document.getElementById('capturarFoto')
-const fecharCameraBtn = document.getElementById('fecharCamera')
-const camArea = document.getElementById('camArea')
-const video = document.getElementById('video')
-const fotosCapturadas = document.getElementById('fotosCapturadas')
-const salvarCorrespondenciaBtn = document.getElementById('salvarCorrespondencia')
-const obsInput = document.getElementById('obs')
-const cameraStatus = document.getElementById('cameraStatus')
-const listaRegistros = document.getElementById('listaRegistros')
-const modalArea = document.getElementById('modalArea')
-const statusSupabase = document.getElementById('statusSupabase')
-
-const loginWrapper = document.getElementById('loginWrapper')
-const appWrapper = document.getElementById('appWrapper')
-const loginUserInput = document.getElementById('loginUser')
-const loginPassInput = document.getElementById('loginPass')
-const btnLogin = document.getElementById('btnLogin')
-const btnLogout = document.getElementById('btnLogout')
-const currentUserInfo = document.getElementById('currentUserInfo')
-const tabUsuarios = document.getElementById('tabUsuarios')
-
-const novoUsuarioLogin = document.getElementById('novoUsuarioLogin')
-const novoUsuarioNome = document.getElementById('novoUsuarioNome')
-const novoUsuarioSenha = document.getElementById('novoUsuarioSenha')
-const btnAddUsuario = document.getElementById('btnAddUsuario')
-const tblUsuarios = document.getElementById('tblUsuarios')
-
-let editingResidentId = null
-let stream = null
-let capturedImages = []
-
-// ====== FUNÇÕES GERAIS ======
-function saveAll(){
-  localStorage.setItem(STORAGE_KEYS.RESIDENTS, JSON.stringify(residents))
-  localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records))
-  localStorage.setItem(STORAGE_KEYS.TRANSPORTS, JSON.stringify(transports))
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users))
-  localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser))
-}
-
-function uuid(){ return 'id'+Math.random().toString(36).slice(2,9) }
-function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]) }
-function formatPhone(p=''){
-  if(!p) return '';
-  if(!p.startsWith('55')) p = '55' + p;
-  return p.replace(/(\d{2})(\d{2})(\d{4,5})(\d{4})?/, (m,a,b,c,d)=>['+',a,b,c,d].filter(Boolean).join(' '));
-}
-
-// normaliza WhatsApp: garante DDI 55
-function normalizeWhatsapp(value){
-  let v = (value||'').replace(/\D/g,'');
-  if(!v) return '';
-  if(!v.startsWith('55')){
-    v = '55' + v;
-  }
-  return v;
-}
-
-// ====== LOGIN / LOGOUT ======
-function atualizarHeaderUsuario(){
-  if(currentUser){
-    currentUserInfo.style.display='block'
-    currentUserInfo.textContent = `Logado como: ${currentUser.name} (${currentUser.username})`
-  } else {
-    currentUserInfo.style.display='none'
-    currentUserInfo.textContent = ''
-  }
-}
-
-function aplicarVisibilidadeUsuarios(){
-  if(currentUser && currentUser.username === 'admin'){
-    tabUsuarios.style.display = 'inline-block'
-  } else {
-    tabUsuarios.style.display = 'none'
-    if(document.querySelector('nav.tabs button.active')?.dataset.tab === 'usuarios'){
-      document.querySelector('nav.tabs button[data-tab="moradores"]').click()
-    }
-  }
-}
-
-function mostrarApp(){
-  loginWrapper.style.display='none'
-  appWrapper.style.display='block'
-  atualizarHeaderUsuario()
-  aplicarVisibilidadeUsuarios()
-}
-
-function mostrarLogin(){
-  appWrapper.style.display='none'
-  loginWrapper.style.display='block'
-  currentUser = null
-  saveAll()
-  atualizarHeaderUsuario()
-}
-
-btnLogin.addEventListener('click', ()=>{
-  const u = loginUserInput.value.trim()
-  const p = loginPassInput.value
-  if(!u || !p){ alert('Informe usuário e senha.'); return }
-  const found = users.find(x=>x.username===u && x.password===p)
-  if(!found){ alert('Usuário ou senha inválidos.'); return }
-  currentUser = { id: found.id, username: found.username, name: found.name }
-  saveAll()
-  loginUserInput.value=''; loginPassInput.value=''
-  mostrarApp()
-})
-
-btnLogout.addEventListener('click', ()=>{
-  if(!confirm('Deseja sair do sistema?')) return
-  mostrarLogin()
-})
-
-// Se já tinha usuário logado, entra direto
-if(currentUser){
-  mostrarApp()
-} else {
-  mostrarLogin()
-}
-
-// ====== SUPABASE SYNC (MORADORES / TRANSPORTADORAS) ======
-async function syncFromSupabase(){
-  if(!supa) {
-    statusMoradores.textContent = 'Supabase indisponível, usando dados locais.';
-    statusTransportadoras.textContent = 'Supabase indisponível, usando dados locais.';
-    renderResidents();
-    renderTransports();
-    return;
-  }
-
-  try{
-    // Carregar moradores
-    const { data: mor, error: errMor } = await supa
-      .from('moradores')
-      .select('id, nome, apartamento, whatsapp')
-      .order('apartamento',{ascending:true});
-
-    if(errMor){
-      console.error('Erro moradores Supabase:', errMor);
-      statusMoradores.textContent = 'Erro ao carregar moradores do Supabase. Usando dados locais.';
-    } else if(mor && mor.length){
-      residents = mor.map(m=>({
-        id: m.id,
-        name: m.nome,
-        apartment: m.apartamento,
-        whatsapp: m.whatsapp || ''
-      }));
-      statusMoradores.textContent = 'Moradores carregados do Supabase.';
-    } else {
-      statusMoradores.textContent = 'Nenhum morador no Supabase ainda. Use o formulário para cadastrar.';
-    }
-
-    // Carregar transportadoras de "configuracoes"
-    const { data: cfg, error: errCfg } = await supa
-      .from('configuracoes')
-      .select('transportadoras')
-      .eq('id',1)
-      .single();
-
-    if(errCfg){
-      console.error('Erro config Supabase:', errCfg);
-      statusTransportadoras.textContent = 'Erro ao carregar transportadoras do Supabase. Usando padrão local.';
-    } else if(cfg && cfg.transportadoras){
-      transports = cfg.transportadoras;
-      statusTransportadoras.textContent = 'Transportadoras carregadas do Supabase.';
-    } else {
-      statusTransportadoras.textContent = 'Sem transportadoras no Supabase. Usando padrão local.';
-    }
-
-  }catch(e){
-    console.error('Erro geral sync Supabase:', e);
-    statusMoradores.textContent = 'Erro geral ao sincronizar, usando dados locais.';
-    statusTransportadoras.textContent = 'Erro geral ao sincronizar, usando dados locais.';
-  }
-
-  saveAll();
-  renderResidents();
-  renderTransports();
-}
-
-// CHAMA SYNC (mas mesmo se falhar, a tela continua funcionando)
-syncFromSupabase();
+// ====== HELPERS ======
+function uuid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8); return v.toString(16); }); }
+function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function normalizeWhatsapp(phone){ return phone.replace(/\D/g,'').replace(/^0+/,''); }
+function getResident(id){ return residents.find(r=>r.id===id); }
+function getResidentName(id){ const r=getResident(id); return r?r.name:''; }
+function getResidentApartment(id){ const r=getResident(id); return r?r.apartment:''; }
+function saveAll(){ localStorage.setItem('residents',JSON.stringify(residents)); localStorage.setItem('transports',JSON.stringify(transports)); localStorage.setItem('records',JSON.stringify(records)); localStorage.setItem('users',JSON.stringify(users)); }
 
 // ====== RENDERIZAÇÃO ======
 function renderResidents(){
-  tblBody.innerHTML = ''
-  selectMorador.innerHTML = '<option value="">-- selecione um morador --</option>'
+  const container=document.getElementById('moradoresList'); container.innerHTML='';
   residents.forEach(r=>{
-    const tr = document.createElement('tr')
-    tr.innerHTML = `<td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.apartment)}</td><td>${escapeHtml(formatPhone(r.whatsapp))}</td><td class="actions">
-      <button class="btn ghost" onclick="editResident('${r.id}')">Editar</button>
-      <button class="btn danger" onclick="deleteResident('${r.id}')">Excluir</button>
-    </td>`
-    tblBody.appendChild(tr)
-
-    const opt = document.createElement('option'); 
-    opt.value = r.id; 
-    opt.textContent = r.name + ' — apt ' + r.apartment; 
-    selectMorador.appendChild(opt)
-  })
+    const div=document.createElement('div'); div.innerHTML=`${escapeHtml(r.name)} - ${escapeHtml(r.apartment)} - ${escapeHtml(r.whatsapp||'')} <button class="btn" onclick="editResident('${r.id}')">Editar</button> <button class="btn danger" onclick="deleteResident('${r.id}')">Excluir</button>`;
+    container.appendChild(div);
+  });
+  const sel=document.getElementById('selectMorador'); sel.innerHTML='<option value="">Selecione</option>';
+  residents.forEach(r=>{ const o=document.createElement('option'); o.value=r.id; o.textContent=r.name; sel.appendChild(o); });
 }
-
 function renderTransports(){
-  transportadorasSelect.innerHTML = ''
-  selectTransportadora.innerHTML = ''
-  transports.forEach(t=>{
-    const o=document.createElement('option'); o.value=o.textContent=t; transportadorasSelect.appendChild(o)
-    const o2=document.createElement('option'); o2.value=o2.textContent=t; selectTransportadora.appendChild(o2)
-  })
+  const container=document.getElementById('transportList'); container.innerHTML=''; transports.forEach(t=>{ const d=document.createElement('div'); d.textContent=t; container.appendChild(d); });
+  const sel=document.getElementById('selectTransportadora'); sel.innerHTML='<option value="">Selecione</option>'; transports.forEach(t=>{ const o=document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o); });
 }
-
-function getResident(id){ return residents.find(x=>x.id===id) || null }
-function getResidentName(id){ const r = getResident(id); return r? r.name : null }
-function getResidentApartment(id){ const r = getResident(id); return r? r.apartment : null }
-function getResidentWhatsapp(id){ const r = getResident(id); return r? r.whatsapp : null }
-
 function renderRecords(){
-  listaRegistros.innerHTML = ''
-  records.slice().reverse().forEach(rec=>{
-    const card = document.createElement('div'); card.className='record-card'
-    const thumb = rec.photos && rec.photos.length ? rec.photos[0] : ''
-    const criadoPor = rec.createdByName ? `Recebida por ${escapeHtml(rec.createdByName)} em ${new Date(rec.createdAt).toLocaleString()}` : `Entrada: ${new Date(rec.createdAt).toLocaleString()}`
-    const entreguePor = rec.status === 'entregue' && rec.deliveredAt
-      ? (rec.deliveredByName ? `Entregue por ${escapeHtml(rec.deliveredByName)} em ${new Date(rec.deliveredAt).toLocaleString()}` : `Entregue em ${new Date(rec.deliveredAt).toLocaleString()}`)
-      : 'Pendente de entrega'
-
-    card.innerHTML = `
-      <img class="record-thumb" src="${thumb||'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=300 height=200><rect width=300 height=200 fill=%23eef3f8/></svg>'}" />
-      <div style="flex:1">
-        <div style="display:flex;justify-content:space-between;align-items:start">
-          <div>
-            <div style="font-weight:700">${escapeHtml(getResidentName(rec.residentId)||'Morador removido')}</div>
-            <div class="small muted">Apto: ${escapeHtml(getResidentApartment(rec.residentId)||'--')}</div>
-            <div class="small">Transportadora: <strong>${escapeHtml(rec.transport||'--')}</strong></div>
-            <div class="small">Obs: ${escapeHtml(rec.obs||'')}</div>
-          </div>
-          <div class="right">
-            <div class="small muted">${criadoPor}</div>
-            <div class="small muted">${entreguePor}</div>
-            <div style="display:flex;gap:6px;margin-top:4px">
-              <button class="btn" onclick="openShare('${rec.id}')">Compartilhar</button>
-              <button class="btn ghost" onclick="openEditRecord('${rec.id}')">Editar</button>
-              <button class="btn warn" onclick="darBaixa('${rec.id}')">Dar baixa</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          ${rec.photos.map(p=>`<img class=\"thumb\" src=\"${p}\" />`).join('')}
-          ${rec.signature ? `<div style=\"display:flex;flex-direction:column;align-items:center;gap:6px\"><div class=\"small muted\">Assinatura</div><img class=\"thumb\" src=\"${rec.signature}\" /></div>` : ''}
-        </div>
-
-        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn ghost" onclick="gerarLinkRegistro('${rec.id}')">Gerar link</button>
-        </div>
-      </div>`
-    listaRegistros.appendChild(card)
-  })
+  const container=document.getElementById('recordsList'); container.innerHTML='';
+  records.forEach(r=>{
+    const div=document.createElement('div');
+    div.innerHTML=`<strong>${escapeHtml(getResidentName(r.residentId)||'--')}</strong> - ${escapeHtml(r.transport||'--')} - ${escapeHtml(r.obs||'')} - ${r.status} 
+      <button class="btn" onclick="openEditRecord('${r.id}')">Editar</button>
+      <button class="btn" onclick="openShare('${r.id}')">Compartilhar</button>
+      <button class="btn" onclick="darBaixa('${r.id}')">Dar Baixa</button>`;
+    container.appendChild(div);
+  });
 }
-
-function updateReports(){
-  const total = records.length
-  const delivered = records.filter(r=>r.status==='entregue').length
-  const pending = total - delivered
-  document.getElementById('numRecebidas').textContent = total
-  document.getElementById('numEntregues').textContent = delivered
-  document.getElementById('numPendentes').textContent = pending
-}
+function updateReports(){ document.getElementById('relatorioContent').innerHTML='Total registros: '+records.length; }
 
 // ====== MORADORES ======
-salvarMoradorBtn.addEventListener('click', async ()=>{
-  const name = nomeInput.value.trim()
-  const apartment = aptInput.value.trim()
-  let whatsapp = whatsappInput.value.trim()
-
-  if(!name||!apartment){ alert('Preencha nome e apartamento.'); return }
-
-  whatsapp = normalizeWhatsapp(whatsapp)
-
-  let moradorId = editingResidentId || null;
-
-  // salvar também no Supabase
-  if(supa){
-    try{
-      if(editingResidentId){
-        const { error } = await supa
-          .from('moradores')
-          .update({
-            nome: name,
-            apartamento: apartment,
-            whatsapp: whatsapp
-          })
-          .eq('id', editingResidentId);
-
-        if(error) console.error('Erro update morador Supabase:', error);
-      } else {
-        const { data, error } = await supa
-          .from('moradores')
-          .insert({
-            nome: name,
-            apartamento: apartment,
-            whatsapp: whatsapp
-          })
-          .select('id')
-          .single();
-
-        if(error){
-          console.error('Erro insert morador Supabase:', error);
-        } else if(data && data.id){
-          moradorId = data.id;
-        }
-      }
-    }catch(e){
-      console.error('Erro geral salvar morador Supabase:', e);
-    }
-  }
+document.getElementById('salvarMoradorBtn').addEventListener('click', async ()=>{
+  const nome=document.getElementById('nomeInput').value.trim();
+  const apartment=document.getElementById('aptInput').value.trim();
+  let whatsapp=document.getElementById('whatsappInput').value.trim();
+  if(!nome) return alert('Preencha o nome');
 
   if(editingResidentId){
-    const r = residents.find(x=>x.id===editingResidentId); if(!r) return
-    r.name=name; r.apartment=apartment; r.whatsapp=whatsapp; editingResidentId=null; salvarMoradorBtn.textContent='Salvar'
+    const r=residents.find(x=>x.id===editingResidentId); if(!r) return;
+    r.name=nome; r.apartment=apartment; r.whatsapp=whatsapp; editingResidentId=null; document.getElementById('salvarMoradorBtn').textContent='Salvar';
   } else {
-    residents.push({id: moradorId || uuid(), name, apartment, whatsapp})
+    residents.push({id:uuid(), name:nome, apartment, whatsapp});
   }
-
-  nomeInput.value=''; aptInput.value=''; whatsappInput.value=''
+  document.getElementById('nomeInput').value=''; document.getElementById('aptInput').value=''; document.getElementById('whatsappInput').value='';
   saveAll(); renderResidents(); renderTransports();
-})
-
-limparFormularioBtn.addEventListener('click', ()=>{
-  nomeInput.value=''; aptInput.value=''; whatsappInput.value=''; editingResidentId=null; salvarMoradorBtn.textContent='Salvar'
-})
-
-window.editResident = function(id){
-  const r = residents.find(x=>x.id===id); if(!r) return
-  nomeInput.value=r.name; aptInput.value=r.apartment;
-  let w = r.whatsapp||'';
-  if(w.startsWith('55')) w = w.slice(2);
-  whatsappInput.value=w;
-  editingResidentId=id; salvarMoradorBtn.textContent='Atualizar'
-}
-
-window.deleteResident = async function(id){
-  if(!confirm('Excluir morador?')) return
-
-  if(supa){
-    try{
-      const { error } = await supa
-        .from('moradores')
-        .delete()
-        .eq('id', id);
-      if(error) console.error('Erro delete morador Supabase:', error);
-    }catch(e){
-      console.error('Erro geral delete morador Supabase:', e);
-    }
-  }
-
-  residents = residents.filter(x=>x.id!==id)
-  saveAll(); renderResidents(); renderRecords(); updateReports()
-}
+});
+document.getElementById('limparFormularioBtn').addEventListener('click', ()=>{
+  document.getElementById('nomeInput').value=''; document.getElementById('aptInput').value=''; document.getElementById('whatsappInput').value=''; editingResidentId=null; document.getElementById('salvarMoradorBtn').textContent='Salvar';
+});
+window.editResident=function(id){ const r=residents.find(x=>x.id===id); if(!r) return; document.getElementById('nomeInput').value=r.name; document.getElementById('aptInput').value=r.apartment; document.getElementById('whatsappInput').value=r.whatsapp||''; editingResidentId=id; document.getElementById('salvarMoradorBtn').textContent='Atualizar'; }
+window.deleteResident=function(id){ if(!confirm('Excluir morador?')) return; residents=residents.filter(x=>x.id!==id); saveAll(); renderResidents(); renderRecords(); updateReports(); }
 
 // ====== TRANSPORTADORAS ======
-addTransportadoraBtn.addEventListener('click', async ()=>{
-  const v = novaTransportadora.value.trim(); if(!v) return
-  transports.push(v); novaTransportadora.value=''; saveAll(); renderTransports();
-
-  if(supa){
-    try{
-      const { error } = await supa
-        .from('configuracoes')
-        .upsert({ id:1, transportadoras: transports }, { onConflict: 'id' });
-      if(error) console.error('Erro ao atualizar transportadoras no Supabase:', error);
-    }catch(e){
-      console.error('Erro geral ao atualizar transportadoras Supabase:', e);
-    }
-  }
-})
+document.getElementById('addTransportadoraBtn').addEventListener('click', ()=>{ 
+  const v=document.getElementById('novaTransportadora').value.trim(); if(!v) return; transports.push(v); document.getElementById('novaTransportadora').value=''; saveAll(); renderTransports();
+});
 
 // ====== CÂMERA ======
-abrirCameraBtn.addEventListener('click', async ()=>{
-  try{
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false})
-    video.srcObject = stream; camArea.style.display='block'; capturarFotoBtn.disabled=false; fecharCameraBtn.style.display='inline-block'; cameraStatus.textContent='Câmera: aberta'
-  }catch(e){ alert('Não foi possível acessar a câmera. Verifique permissões. '+e.message) }
-})
+const video=document.getElementById('video'); const camArea=document.getElementById('cameraStatus'); const fotosCapturadas=document.getElementById('fotosCapturadas');
+document.getElementById('abrirCameraBtn').addEventListener('click', async ()=>{
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}); video.srcObject=stream; camArea.textContent='Câmera: aberta'; document.getElementById('capturarFotoBtn').disabled=false; document.getElementById('fecharCameraBtn').style.display='inline-block'; }catch(e){ alert('Erro câmera: '+e.message); }
+});
+document.getElementById('capturarFotoBtn').addEventListener('click', ()=>{
+  if(!stream) return; const c=document.createElement('canvas'); c.width=video.videoWidth||1280; c.height=video.videoHeight||720; c.getContext('2d').drawImage(video,0,0,c.width,c.height); capturedImages.push(c.toDataURL('image/jpeg',0.8)); renderCapturedThumbs();
+});
+document.getElementById('fecharCameraBtn').addEventListener('click', ()=>{ stopStream(); });
+function stopStream(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; video.srcObject=null; camArea.textContent='Câmera: fechada'; document.getElementById('capturarFotoBtn').disabled=true; document.getElementById('fecharCameraBtn').style.display='none'; } }
+function renderCapturedThumbs(){ fotosCapturadas.innerHTML=''; capturedImages.forEach((d,i)=>{ const img=document.createElement('img'); img.src=d; img.className='thumb'; const btn=document.createElement('button'); btn.textContent='Remover'; btn.className='btn ghost'; btn.onclick=()=>{ capturedImages.splice(i,1); renderCapturedThumbs(); }; const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.flexDirection='column'; wrap.style.gap='6px'; wrap.appendChild(img); wrap.appendChild(btn); fotosCapturadas.appendChild(wrap); }); }
 
-capturarFotoBtn.addEventListener('click', ()=>{
-  if(!stream) return
-  const canvas = document.createElement('canvas')
-  canvas.width = video.videoWidth || 1280; canvas.height = video.videoHeight || 720
-  const ctx = canvas.getContext('2d'); ctx.drawImage(video,0,0,canvas.width,canvas.height)
-  const data = canvas.toDataURL('image/jpeg',0.8)
-  capturedImages.push(data); renderCapturedThumbs()
-})
-
-fecharCameraBtn.addEventListener('click', ()=>{ stopStream(); })
-
-function stopStream(){
-  if(stream){
-    stream.getTracks().forEach(t=>t.stop()); stream=null; video.srcObject=null; camArea.style.display='none'; capturarFotoBtn.disabled=true; fecharCameraBtn.style.display='none'; cameraStatus.textContent='Câmera: fechada'
-  }
+// ====== COMPARTILHAR WHATSAPP (AJUSTADO) ======
+window.openShare=function(recordId){
+  const rec=records.find(r=>r.id===recordId); if(!rec) return; const resident=getResident(rec.residentId); if(!resident){ alert('Morador não encontrado'); return; }
+  const phone=normalizeWhatsapp(resident.whatsapp||''); if(!phone){ alert('Telefone do morador não cadastrado'); return; }
+  const text=`Olá ${resident.name}, chegou uma entrega (${rec.obs||'sem descrição'}) pela transportadora ${rec.transport||'--'} às ${new Date(rec.createdAt).toLocaleString()}.`;
+  const encoded=encodeURIComponent(text);
+  // Link universal WhatsApp Web + App
+  const url=`https://wa.me/${phone}?text=${encoded}`;
+  window.open(url,'_blank');
 }
 
-function renderCapturedThumbs(){
-  fotosCapturadas.innerHTML=''
-  capturedImages.forEach((d,i)=>{
-    const img = document.createElement('img'); img.src=d; img.className='thumb'; img.title='Foto '+(i+1)
-    const btnRm = document.createElement('button'); btnRm.textContent='Remover'; btnRm.className='btn ghost'; btnRm.onclick=()=>{ capturedImages.splice(i,1); renderCapturedThumbs() }
-    const wrap = document.createElement('div'); wrap.style.display='flex'; wrap.style.flexDirection='column'; wrap.style.gap='6px'; wrap.appendChild(img); wrap.appendChild(btnRm); fotosCapturadas.appendChild(wrap)
-  })
+// ====== GERAR LINK REGISTRO (AJUSTADO) ======
+window.gerarLinkRegistro=function(recordId){
+  const rec=records.find(r=>r.id===recordId); if(!rec) return;
+  if(!rec.supabaseId){ alert('Este registro ainda não tem ID do Supabase'); return; }
+  const resident=getResident(rec.residentId); if(!resident) return; const phone=normalizeWhatsapp(resident.whatsapp||''); if(!phone){ alert('Telefone do morador não cadastrado'); return; }
+  const link=`${window.location.origin}/assinatura.html?registro=${rec.supabaseId}`;
+  const msg=`Olá ${resident.name},\nChegou uma entrega para o apto ${resident.apartment}.\nPor favor, abra o link abaixo para assinar:\n${link}`;
+  const encoded=encodeURIComponent(msg);
+  const url=`https://wa.me/${phone}?text=${encoded}`;
+  window.open(url,'_blank');
 }
 
-// ====== FUNÇÃO: UPLOAD BASE64 -> STORAGE SUPABASE ======
-async function uploadBase64ToStorage(base64, bucket){
-  if(!base64 || !supa) return null
-  try{
-    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`
-    const base64Data = base64.split(',')[1]
-    const bytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0))
-    const { error } = await supa.storage.from(bucket).upload(nome, bytes, {
-      contentType: "image/jpeg",
-      upsert: false
-    })
-    if(error){
-      console.error("Erro upload storage:", error)
-      return null
-    }
-    const { data } = supa.storage.from(bucket).getPublicUrl(nome)
-    return data.publicUrl
-  }catch(err){
-    console.error("Erro uploadBase64ToStorage:", err)
-    return null
-  }
-}
-
-const BUCKET_FOTOS = "fotos";
-
-// ====== SALVAR CORRESPONDÊNCIA (LOCAL + SUPABASE) ======
-salvarCorrespondenciaBtn.addEventListener('click', async ()=>{
-  if(!currentUser){ alert('Faça login novamente.'); return }
-  const residentId = selectMorador.value
-  const transport = selectTransportadora.value
-  const obs = obsInput.value.trim()
-  if(!residentId){ alert('Selecione um morador.'); return }
-
-  if(!capturedImages.length){
-    if(!confirm('Nenhuma foto capturada — salvar mesmo assim?')) return
-  }
-
-  const morador = getResident(residentId)
-  if(!morador){
-    alert('Morador não encontrado.');
-    return;
-  }
-
-  statusSupabase.textContent = "Enviando para Supabase..."
-
-  let foto1=null, foto2=null, foto3=null
-  try{
-    if(capturedImages[0]) foto1 = await uploadBase64ToStorage(capturedImages[0], BUCKET_FOTOS)
-    if(capturedImages[1]) foto2 = await uploadBase64ToStorage(capturedImages[1], BUCKET_FOTOS)
-    if(capturedImages[2]) foto3 = await uploadBase64ToStorage(capturedImages[2], BUCKET_FOTOS)
-  }catch(e){
-    console.error(e)
-  }
-
-  let registroId = null
-  if(supa){
-    try{
-      const payload = {
-        nome: morador.name,
-        apartamento: morador.apartment,
-        whatsapp: morador.whatsapp,
-        entrega: obs || 'Entrega',
-        status: 'Pendente',
-        transportadora: transport || null,
-        foto_url: foto1,
-        foto_url_2: foto2,
-        foto_url_3: foto3
-      }
-
-      const { data, error } = await supa
-        .from('registros')
-        .insert(payload)
-        .select('id')
-        .single()
-
-      if(error){
-        console.error("Erro ao inserir no Supabase:", error)
-        alert('Erro ao salvar no Supabase, mas o registro ficará salvo localmente.')
-      } else {
-        registroId = data.id
-      }
-    }catch(e){
-      console.error(e)
-    }
-  }
-
-  const rec={
-    id:uuid(),
-    residentId,
-    transport,
-    obs,
-    photos:capturedImages.slice(),
-    createdAt:Date.now(),
-    status:'pendente',
-    signature:null,
-    createdBy: currentUser.id,
-    createdByName: currentUser.name,
-    supabaseId: registroId || null
-  }
-
-  records.push(rec)
-  capturedImages=[]; renderCapturedThumbs(); saveAll(); renderRecords(); updateReports();
-  alert('Registro salvo.')
-  statusSupabase.textContent = registroId ? `Sincronizado com Supabase (ID: ${registroId})` : `Salvo localmente (falha na sincronização)`
-
-  stopStream()
-})
-
-// ====== WHATSAPP NORMAL (AVISO SIMPLES) – SOMENTE APP ======
-window.openShare = function(recordId){
-  const rec = records.find(r=>r.id===recordId); if(!rec) return
-  const resident = getResident(rec.residentId)
-  const phoneRaw = resident?.whatsapp || ''
-  const phone = normalizeWhatsapp(phoneRaw)
-  const name = getResidentName(rec.residentId) || 'morador'
-
-  if(!phone){
-    alert('Telefone do morador não cadastrado.');
-    return;
-  }
-
-  const text = `Olá ${name}, informa-se que chegou uma entrega (${rec.obs||'sem descrição'}) pela transportadora ${rec.transport||'--'} às ${new Date(rec.createdAt).toLocaleString()}. Atenciosamente, Acapulco Portaria.`
-  const encoded = encodeURIComponent(text)
-
-  // Tenta abrir apenas o APP do WhatsApp (via intent://)
-  const url = `intent://send/?phone=${phone}&text=${encoded}#Intent;scheme=smsto;package=com.whatsapp;end;`
-  window.location.href = url;
-}
-
-// ====== GERAR LINK DE ASSINATURA (E ENVIAR PRO WHATSAPP) ======
-window.gerarLinkRegistro = function(recordId){
-  const rec = records.find(r=>r.id===recordId); if(!rec) return
-
-  const resident = getResident(rec.residentId)
-  const phoneRaw = resident?.whatsapp || ''
-  const phone = normalizeWhatsapp(phoneRaw)
-  const name = getResidentName(rec.residentId) || 'morador'
-  const apt = getResidentApartment(rec.residentId) || ''
-
-  if(!phone){
-    alert('Telefone do morador não cadastrado.');
-    return;
-  }
-
-  if(!rec.supabaseId){
-    alert('Este registro ainda não tem ID do Supabase. Salve um novo registro para testar o link.');
-    return;
-  }
-
-  const baseUrl = window.location.origin;
-  const link = `${baseUrl}/assinatura.html?registro=${rec.supabaseId}`
-
-  const msg = `Olá ${name},\n\nchegou uma entrega para o apto ${apt} na portaria do Condomínio Acapulco.\n\nPor favor, abra o link abaixo para visualizar os detalhes e assinar o recebimento:\n${link}\n\nAtenciosamente,\nPortaria Acapulco.`
-
-  const encoded = encodeURIComponent(msg)
-  const url = `intent://send/?phone=${phone}&text=${encoded}#Intent;scheme=smsto;package=com.whatsapp;end;`
-  window.location.href = url;
-}
-
-// ====== EDITAR REGISTRO (LOCAL) ======
-window.openEditRecord = function(recordId){
-  const rec = records.find(r=>r.id===recordId); if(!rec) return
-  showModal(`<h3>Editar Registro</h3>
-  <div style="display:flex;gap:8px;flex-direction:column">
-    <div>Morador: <strong>${escapeHtml(getResidentName(rec.residentId)||'--')}</strong></div>
-    <div>Transportadora: <input id="editTransport" value="${escapeHtml(rec.transport||'')}" /></div>
-    <div>Obs: <input id="editObs" value="${escapeHtml(rec.obs||'')}" /></div>
-    <div style="display:flex;gap:6px;align-items:center"><button id="openCamAdd" class="btn">Abrir câmera (adicionar foto)</button><button id="fileAdd" class="btn ghost">Adicionar do aparelho</button></div>
-    <div id="addThumbs" style="display:flex;gap:8px;flex-wrap:wrap">${rec.photos.map(p=>`<img class=\\"thumb\\" src=\\"${p}\\" />`).join('')}</div>
-    <div style="display:flex;gap:8px;justify-content:flex-end"><button id="saveEdit" class="btn">Salvar</button><button id="closeModal" class="btn ghost">Fechar</button></div>
-  </div>`)
-
-  document.getElementById('closeModal').addEventListener('click', closeModal)
-  document.getElementById('saveEdit').addEventListener('click', ()=>{
-    rec.transport = document.getElementById('editTransport').value
-    rec.obs = document.getElementById('editObs').value
-    saveAll(); renderRecords(); updateReports(); closeModal(); alert('Registro atualizado.')
-  })
-  document.getElementById('fileAdd').addEventListener('click', ()=>{
-    const f = document.createElement('input'); f.type='file'; f.accept='image/*'; f.multiple=true
-    f.onchange = ()=>{
-      Array.from(f.files).forEach(file=>{
-        const reader = new FileReader()
-        reader.onload = e=>{
-          rec.photos.push(e.target.result)
-          document.getElementById('addThumbs').insertAdjacentHTML('beforeend', `<img class=\\"thumb\\" src=\\"${e.target.result}\\" />`)
-        }
-        reader.readAsDataURL(file)
-      }); saveAll()
-    }; f.click()
-  })
-  document.getElementById('openCamAdd').addEventListener('click', async ()=>{
-    try{
-      const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
-      const v = document.createElement('video'); v.autoplay=true; v.playsInline=true; v.srcObject = s; v.style.width='100%';
-      const btnCapture = document.createElement('button'); btnCapture.className='btn'; btnCapture.textContent='Capturar';
-      document.getElementById('addThumbs').appendChild(v); document.getElementById('addThumbs').appendChild(btnCapture)
-      btnCapture.addEventListener('click', ()=>{
-        const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v,0,0,c.width,c.height); const data = c.toDataURL('image/jpeg',0.8); rec.photos.push(data); document.getElementById('addThumbs').insertAdjacentHTML('beforeend', `<img class=\\"thumb\\" src=\\"${data}\\" />`); saveAll();
-      })
-      const stop = ()=>{ s.getTracks().forEach(t=>t.stop()); try{ v.remove() }catch(e){} }
-      document.getElementById('closeModal').addEventListener('click', stop, {once:true})
-    }catch(e){ alert('Erro abrindo câmera: '+e.message) }
-  })
-}
-
-// ====== DAR BAIXA / ASSINATURA (LOCAL) ======
-window.darBaixa = function(recordId){
-  const rec = records.find(r=>r.id===recordId); if(!rec) return
-  showModal(`<h3>Assinatura e baixa</h3>
-    <div style="display:flex;gap:8px;flex-direction:column">
-      <div>Morador: <strong>${escapeHtml(getResidentName(rec.residentId)||'--')}</strong></div>
-      <canvas id="signCanvas" width="800" height="300"></canvas>
-      <div style="display:flex;gap:8px;justify-content:flex-end"><button id="saveSign" class="btn">Salvar assinatura e dar baixa</button><button id="clearSign" class="btn ghost">Limpar</button><button id="cancelSign" class="btn ghost">Cancelar</button></div>
-    </div>`)
-
-  const canvas = document.getElementById('signCanvas')
-  const ctx = canvas.getContext('2d')
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.strokeStyle='#111'; ctx.lineWidth=3; ctx.lineJoin='round'; ctx.lineCap='round';
-  let drawing=false; let last={x:0,y:0}
-  function pos(e){
-    const rect=canvas.getBoundingClientRect(); if(e.touches) e=e.touches[0]
-    return {x:(e.clientX-rect.left)*(canvas.width/rect.width), y:(e.clientY-rect.top)*(canvas.height/rect.height)}
-  }
-  canvas.addEventListener('pointerdown', e=>{ drawing=true; last=pos(e) })
-  canvas.addEventListener('pointermove', e=>{ if(!drawing) return; const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p })
-  canvas.addEventListener('pointerup', ()=>{ drawing=false })
-  canvas.addEventListener('pointerleave', ()=>{ drawing=false })
-
-  document.getElementById('clearSign').addEventListener('click', ()=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height)
-  })
-  document.getElementById('cancelSign').addEventListener('click', ()=>{ closeModal() })
-  document.getElementById('saveSign').addEventListener('click', ()=>{
-    if(!currentUser){ alert('Faça login novamente.'); return }
-    const data = canvas.toDataURL('image/png')
-    rec.signature = data
-    rec.status='entregue'
-    rec.deliveredAt = Date.now()
-    rec.deliveredBy = currentUser.id
-    rec.deliveredByName = currentUser.name
-    saveAll(); renderRecords(); updateReports(); closeModal(); alert('Assinatura salva. Registro baixado.')
-  })
-}
-
-// ====== MODAL HELPERS ======
-function showModal(html){
-  modalArea.innerHTML = `<div class="overlay"><div class="modal card">${html}</div></div>`
-  modalArea.style.display='block'
-}
-function closeModal(){
-  modalArea.innerHTML=''; modalArea.style.display='none'
-}
-
-// ====== TABS ======
-tabs.forEach(b=>b.addEventListener('click', ()=>{
-  tabs.forEach(x=>x.classList.remove('active'))
-  b.classList.add('active')
-  sections.forEach(s=>s.style.display='none')
-  document.getElementById(b.dataset.tab).style.display='block'
-  if(b.dataset.tab==='registros'){ renderRecords() }
-  if(b.dataset.tab==='relatorio'){ updateReports() }
-  if(b.dataset.tab==='usuarios'){ renderUsuarios() }
-}))
-
-// ====== USUÁRIOS (ADMIN) ======
-function renderUsuarios(){
-  tblUsuarios.innerHTML = ''
-  users.forEach(u=>{
-    const tr = document.createElement('tr')
-    tr.innerHTML = `<td>${escapeHtml(u.username)}</td><td>${escapeHtml(u.name)}</td><td>
-      ${u.username!=='admin' ? `<button class="btn danger" onclick="deleteUsuario('${u.id}')">Excluir</button>` : ''}
-    </td>`
-    tblUsuarios.appendChild(tr)
-  })
-}
-
-btnAddUsuario.addEventListener('click', ()=>{
-  if(!currentUser || currentUser.username!=='admin'){
-    alert('Somente o admin pode criar usuários.'); return
-  }
-  const login = novoUsuarioLogin.value.trim()
-  const nome = novoUsuarioNome.value.trim()
-  const senha = novoUsuarioSenha.value
-  if(!login || !nome || !senha){ alert('Preencha login, nome e senha.'); return }
-  if(users.find(u=>u.username===login)){ alert('Já existe um usuário com esse login.'); return }
-  users.push({id:uuid(), username:login, name:nome, password:senha})
-  novoUsuarioLogin.value=''; novoUsuarioNome.value=''; novoUsuarioSenha.value=''
-  saveAll(); renderUsuarios(); alert('Usuário criado com sucesso.')
-})
-
-window.deleteUsuario = function(id){
-  if(!currentUser || currentUser.username!=='admin'){
-    alert('Somente o admin pode excluir usuários.'); return
-  }
-  const user = users.find(u=>u.id===id)
-  if(!user || user.username==='admin'){ return }
-  if(!confirm(`Excluir o usuário ${user.username}?`)) return
-  users = users.filter(u=>u.id!==id)
-  saveAll(); renderUsuarios()
-}
-
-// ====== INIT ======
-renderTransports()
-renderResidents()
-renderRecords()
-updateReports()
-aplicarVisibilidadeUsuarios()
-atualizarHeaderUsuario()
-saveAll()
-
-// expõe funções
-window.openEditRecord = window.openEditRecord
-window.openShare = window.openShare
-window.darBaixa = window.darBaixa
-window.editResident = window.editResident
-window.deleteResident = window.deleteResident
-window.deleteUsuario = window.deleteUsuario
-window.gerarLinkRegistro = window.gerarLinkRegistro
-
-// auto stop stream on page unload
-window.addEventListener('beforeunload', ()=>{ if(stream) stream.getTracks().forEach(t=>t.stop()) })
+// ====== INICIALIZAÇÃO ======
+renderTransports(); renderResidents(); renderRecords(); updateReports();
 </script>
+
 </body>
 </html>
-
