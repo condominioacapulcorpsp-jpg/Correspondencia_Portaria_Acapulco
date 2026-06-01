@@ -1,128 +1,554 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Assinatura da Entrega</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Assinatura de Entrega — Portaria Acapulco</title>
+
+<!-- FAVICON: usando a mesma imagem de fundo (arquivo relativo) -->
+<link rel="icon" type="image/jpeg" href="fundo-acapulco.jpg">
+<link rel="shortcut icon" href="fundo-acapulco.jpg">
+<link rel="apple-touch-icon" href="fundo-acapulco.jpg">
+
 <style>
-  body { font-family: Arial; padding: 20px; }
-  .thumb { width: 120px; border-radius: 6px; margin-right: 6px; }
-  #canvas { border: 2px solid #111; width: 100%; height: 250px; touch-action: none; }
+:root{
+  --azul:#1f2b48;
+  --verde:#1fb954;
+  --fundo:#f0f2f5;
+  --card:#ffffffcc; /* leve transparência para ver o fundo */
+  --muted:#6b7280;
+  --danger:#e74c3c;
+  --success:#16a34a;
+  --sombra: 0 8px 30px rgba(15,23,42,0.12);
+  --radius:12px;
+  --max-width:760px;
+  --assinatura-min-pixels:120;
+}
+
+/* Dark / light theme variables (toggle via .tema-escuro) */
+body{font-family: Inter, "Segoe UI", Arial, sans-serif; margin:0; color:#111;
+  background-image: url("fundo-acapulco.jpg");
+  background-size: cover; background-position:center; background-attachment:fixed;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+body::before{ content:""; position:fixed; inset:0; background:rgba(0,0,0,0.36); z-index:-1; }
+
+body.tema-escuro{
+  --fundo:#0b1220;
+  color:#e6eef8;
+}
+
+/* layout */
+.page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px 16px;
+}
+.container{
+  width:100%;
+  max-width:var(--max-width);
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--sombra);
+  overflow:hidden;
+}
+
+/* header */
+.header{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:18px;
+  background:linear-gradient(180deg,var(--azul),#16345f);
+  color:#fff;
+}
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.brand img{
+  width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.12);
+}
+.brand h1{font-size:18px;margin:0}
+.header .meta{font-size:13px;color:rgba(255,255,255,0.85)}
+
+.content{
+  padding:18px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
+}
+
+/* top info */
+.info-grid{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.info-block{
+  flex:1;
+  min-width:180px;
+  padding:12px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(0,0,0,0.04);
+  box-shadow:0 2px 8px rgba(10,10,12,0.03);
+}
+.info-label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block}
+.info-value{font-weight:600;font-size:15px}
+
+/* fotos */
+.fotos-grid{display:flex;gap:8px;flex-wrap:wrap}
+.fotos-grid img{width:96px;height:96px;border-radius:8px;object-fit:cover;border:1px solid #e6e6e6;background:#fff}
+
+/* assinatura card */
+.assinatura-card{
+  padding:14px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid rgba(0,0,0,0.04);
+  display:flex;flex-direction:column;gap:12px;
+}
+.assinatura-title{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.hint{font-size:13px;color:var(--muted)}
+
+/* canvas */
+#assinaturaCanvas{
+  width:100%;
+  height:260px;
+  border:2px dashed rgba(20,30,50,0.12);
+  border-radius:10px;
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  touch-action:none;
+  display:block;
+}
+
+/* assinatura preview */
+.preview-assinatura{max-width:320px;margin:0 auto;border-radius:8px;border:1px solid #ddd;background:#fff;padding:8px;display:block;object-fit:contain}
+
+/* botões */
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{flex:1;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--azul);color:#fff}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.08)}
+.btn.warn{background:var(--danger);color:#fff}
+.btn[disabled]{opacity:0.55;cursor:not-allowed}
+
+/* status area */
+.status-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.status-pill{display:inline-block;padding:8px 12px;border-radius:999px;font-weight:700;color:#fff}
+.status-pendente{background:#f59e0b}
+.status-entregue{background:var(--success)}
+
+/* bloqueio message */
+.bloqueio{padding:12px;border-radius:10px;background:#fff5f5;border:1px solid #f5c6c6;color:#822;}
+
+/* footer */
+.footer{padding:12px 18px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.footer small{color:var(--muted);}
+
+/* responsive tweaks */
+@media(max-width:720px){
+  #assinaturaCanvas{height:220px}
+  .fotos-grid img{width:76px;height:76px}
+  .info-grid{flex-direction:column}
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<h2>Assinatura da Entrega</h2>
-<div id="info"></div>
+<div class="page">
+  <div class="container" role="main" aria-labelledby="titulo">
+    <header class="header" role="banner">
+      <div class="brand" aria-hidden="true">
+        <!-- imagem relativa usada aqui -->
+        <img src="fundo-acapulco.jpg" alt="Acapulco" />
+        <div>
+          <h1 id="titulo">Confirmação de Entrega</h1>
+          <div class="meta">Portaria Acapulco — Assinatura segura</div>
+        </div>
+      </div>
+      <div style="margin-left:auto">
+        <button id="toggleTemaBtn" class="btn ghost" aria-pressed="false" title="Alternar tema">🌗 Tema</button>
+      </div>
+    </header>
 
-<h3>Assine abaixo:</h3>
-<canvas id="canvas"></canvas>
-<br><br>
-<button id="btnLimpar">Limpar</button>
-<button id="btnSalvar">Salvar Assinatura</button>
+    <main class="content" role="main">
+      <!-- infos -->
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="info-grid">
+          <div class="info-block">
+            <span class="info-label">Morador</span>
+            <div id="nomeMorador" class="info-value">—</div>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Entrega</span>
+            <div id="tipoEntrega" class="info-value">—</div>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Recebida em</span>
+            <div id="dataRecebida" class="info-value">—</div>
+          </div>
+        </div>
 
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js";
+        <div class="info-grid">
+          <div class="info-block" style="flex:1.4">
+            <span class="info-label">Fotos da encomenda</span>
+            <div id="fotosContainer" class="fotos-grid hint">Carregando...</div>
+          </div>
 
-const supabase = createClient("SEU_URL", "SEU_ANON_KEY");
+          <div class="info-block" style="max-width:400px;min-width:350px">
+            <span class="info-label">Status</span>
+            <div style="margin-top:6px" id="statusEntregaWrap">
+              <span id="statusEntrega" class="status-pill status-pendente">Pendente</span>
+            </div>
+            <div style="margin-top:10px">
+              <span class="info-label">Assinatura já registrada</span>
+              <img id="assinaturaExistente" class="preview-assinatura" style="display:none" alt="Assinatura existente" />
+            </div>
+          </div>
+        </div>
+      </div>
 
-const urlParams = new URLSearchParams(window.location.search);
-const registroId = urlParams.get("registro");
+      <!-- assinatura -->
+      <section class="assinatura-card" aria-labelledby="assinaturaTitle">
+        <div class="assinatura-title">
+          <div>
+            <h2 id="assinaturaTitle" style="margin:0;font-size:16px">Assine para confirmar</h2>
+            <div class="hint">Assine abaixo com o dedo ou mouse. Só é possível assinar uma vez.</div>
+          </div>
+          <div id="pixelInfo" class="hint" aria-live="polite">—</div>
+        </div>
 
-async function carregar() {
-  const { data, error } = await supabase
-    .from("registros")
-    .select("*")
-    .eq("id", registroId)
-    .single();
+        <!-- canvas area -->
+        <canvas id="assinaturaCanvas" role="img" aria-label="Área de assinatura"></canvas>
 
-  if (error || !data) {
-    document.getElementById("info").innerHTML = "<p>Registro não encontrado.</p>";
-    return;
-  }
+        <!-- ações -->
+        <div class="actions" style="display:flex;align-items:center">
+          <button id="btnLimparAssinatura" class="btn ghost" type="button">Limpar</button>
+          <button id="btnSalvarAssinatura" class="btn primary" type="button" disabled>Salvar assinatura</button>
+          <button id="btnFechar" class="btn ghost" type="button">Fechar</button>
+        </div>
 
-  document.getElementById("info").innerHTML = `
-    <p><strong>Morador:</strong> ${data.nome}</p>
-    <p><strong>Apartamento:</strong> ${data.apartamento}</p>
-    <p><strong>Transportadora:</strong> ${data.transportadora || "--"}</p>
-    <p><strong>Fotos:</strong></p>
-    <div>
-      ${data.foto_url ? `<img src="${data.foto_url}" class="thumb">` : ""}
-      ${data.foto_url_2 ? `<img src="${data.foto_url_2}" class="thumb">` : ""}
-      ${data.foto_url_3 ? `<img src="${data.foto_url_3}" class="thumb">` : ""}
-    </div>
-  `;
+        <!-- mensagem de bloqueio (quando já assinado) -->
+        <div id="mensagemBloqueio" style="display:none" class="bloqueio">
+          Esta entrega já foi confirmada anteriormente. Em caso de dúvida, contate a portaria.
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer class="footer" role="contentinfo">
+      <small>Portaria Acapulco • Sistema de confirmação</small>
+      <div id="statusBar"><span id="statusText">Carregando...</span></div>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ========== Config Supabase (mesmos dados) ========== */
+const SUPABASE_URL = "https://vdxiphzxdpwggydezbzw.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeGlwaHp4ZHB3Z2d5ZGV6Ynp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDQxMTQsImV4cCI6MjA3ODQ4MDExNH0.IQLGlZlcgEw8-E_TbnfZwrzs8eJt0Ky4WtYrmyCr1aI";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BUCKET_ASSINATURAS = "assinaturas";
+
+let registroAtual = null;
+const PIXELS_MIN = Number(getComputedStyle(document.documentElement).getPropertyValue('--assinatura-min-pixels')) || 120;
+
+function setStatus(msg){ const s = document.getElementById('statusText'); if (s) s.textContent = msg; }
+
+/* TEMA persistente */
+(function(){
+  const btn = document.getElementById('toggleTemaBtn');
+  const saved = localStorage.getItem('tema_sistema_condominio');
+  if (saved === 'escuro') document.body.classList.add('tema-escuro');
+  btn.addEventListener('click', ()=>{
+    const ativo = document.body.classList.toggle('tema-escuro');
+    localStorage.setItem('tema_sistema_condominio', ativo ? 'escuro' : 'claro');
+    btn.setAttribute('aria-pressed', String(ativo));
+  });
+})();
+
+/* pegar id registro da URL */
+function obterIdRegistroDaUrl(){
+  return new URLSearchParams(window.location.search).get('registro');
 }
-carregar();
 
+/* carregar registro do supabase */
+async function carregarRegistro(){
+  const id = obterIdRegistroDaUrl();
+  if (!id){ setStatus('Registro não informado'); alert('Registro inválido: parâmetro "registro" ausente.'); return; }
 
-// ==== CANVAS DE ASSINATURA ===
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = canvas.offsetWidth;
-canvas.height = 250;
+  try {
+    setStatus('Carregando entrega...');
+    const { data, error } = await db.from('registros').select('*').eq('id', id).single();
+    if (error || !data){ console.error(error); setStatus('Registro não encontrado'); alert('Não foi possível localizar a entrega.'); return; }
+    registroAtual = data;
+    preencherDadosTela(data);
+    decidirSePermiteAssinar(data);
+    setStatus('Pronto');
+  } catch (e) {
+    console.error(e);
+    setStatus('Erro ao carregar');
+    alert('Erro ao carregar a entrega. Veja console.');
+  }
+}
 
-let desenhando = false;
+/* preencher UI */
+function preencherDadosTela(reg){
+  document.getElementById('nomeMorador').textContent = reg.nome || '-';
+  document.getElementById('tipoEntrega').textContent = reg.entrega || '-';
+  document.getElementById('dataRecebida').textContent = reg.data ? new Date(reg.data).toLocaleString() : '-';
 
-canvas.addEventListener("pointerdown", e => {
-  desenhando = true;
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
-canvas.addEventListener("pointermove", e => {
-  if (!desenhando) return;
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-});
-canvas.addEventListener("pointerup", () => desenhando = false);
+  // status pill
+  const statusWrap = document.getElementById('statusEntrega');
+  if (reg.status && reg.status.toLowerCase() === 'entregue'){
+    statusWrap.textContent = 'Entregue';
+    statusWrap.className = 'status-pill status-entregue';
+  } else {
+    statusWrap.textContent = 'Pendente';
+    statusWrap.className = 'status-pill status-pendente';
+  }
 
-
-// ==== SALVAR ASSINATURA ====
-document.getElementById("btnSalvar").onclick = async () => {
-  const assinaturaBase64 = canvas.toDataURL("image/png");
-
-  const nome = `assinatura-${registroId}.png`;
-  const base64 = assinaturaBase64.split(",")[1];
-  const bytes = atob(base64);
-  const buf = new Uint8Array(bytes.length);
-  for (let i = 0; i < bytes.length; i++) buf[i] = bytes.charCodeAt(i);
-
-  // envia assinatura para o storage
-  const { data: upload, error: uploadErr } = await supabase.storage
-    .from("fotos")
-    .upload(nome, buf, {
-      contentType: "image/png",
-      upsert: true
+  // fotos
+  const fotosContainer = document.getElementById('fotosContainer');
+  fotosContainer.innerHTML = '';
+  const urls = [reg.foto_url, reg.foto_url_2, reg.foto_url_3].filter(Boolean);
+  if (urls.length){
+    urls.forEach(u=>{
+      const img = document.createElement('img');
+      img.src = u;
+      img.alt = 'Foto da encomenda';
+      fotosContainer.appendChild(img);
     });
+  } else {
+    fotosContainer.textContent = 'Nenhuma foto registrada.';
+  }
 
-  if (uploadErr) {
-    alert("Erro ao salvar assinatura.");
+  // assinatura existente
+  const assImg = document.getElementById('assinaturaExistente');
+  if (reg.assinatura_url){
+    assImg.src = reg.assinatura_url;
+    assImg.style.display = 'block';
+  } else {
+    assImg.style.display = 'none';
+  }
+}
+
+/* decidir se pode assinar */
+function decidirSePermiteAssinar(reg){
+  const canvas = document.getElementById('assinaturaCanvas');
+  const bloqueio = document.getElementById('mensagemBloqueio');
+
+  const jaTemAss = !!reg.assinatura_url || (reg.status && reg.status.toLowerCase() === 'entregue');
+
+  if (jaTemAss){
+    canvas.style.display = 'none';
+    bloqueio.style.display = 'block';
+    document.getElementById('btnSalvarAssinatura').disabled = true;
+    document.getElementById('btnLimparAssinatura').disabled = true;
+  } else {
+    canvas.style.display = 'block';
+    bloqueio.style.display = 'none';
+    prepararCanvasAssinatura();
+  }
+}
+
+/* ===== Canvas assinatura com validação em tempo real ===== */
+function prepararCanvasAssinatura(){
+  const canvas = document.getElementById('assinaturaCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // configurar tamanho levando em conta pixel ratio
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.round(rect.width * ratio);
+  canvas.height = Math.round(rect.height * ratio);
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  ctx.scale(ratio, ratio);
+
+  // estilo do traço
+  ctx.lineWidth = 2.2;
+  ctx.lineJoin = ctx.lineCap = 'round';
+  ctx.strokeStyle = '#111';
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  let drawing = false;
+  let last = {x:0, y:0};
+
+  function posFromEvent(e){
+    const r = canvas.getBoundingClientRect();
+    let cx = e.clientX, cy = e.clientY;
+    if (e.touches && e.touches[0]){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+    return { x: cx - r.left, y: cy - r.top };
+  }
+
+  function start(e){
+    drawing = true;
+    last = posFromEvent(e);
+    e.preventDefault();
+  }
+  function move(e){
+    if (!drawing) return;
+    const p = posFromEvent(e);
+    ctx.beginPath();
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    last = p;
+    e.preventDefault();
+  }
+  function end(e){
+    drawing = false;
+    atualizarContagemDePixels();
+    e && e.preventDefault();
+  }
+
+  // remover listeners anteriores (se houver)
+  canvas.onpointerdown = canvas.onpointermove = canvas.onpointerup = canvas.onpointerleave = null;
+
+  // usar pointer events (mouse + touch)
+  canvas.addEventListener('pointerdown', start, {passive:false});
+  canvas.addEventListener('pointermove', move, {passive:false});
+  canvas.addEventListener('pointerup', end, {passive:false});
+  canvas.addEventListener('pointerleave', end, {passive:false});
+  canvas.addEventListener('pointercancel', end, {passive:false});
+
+  // limpar botão
+  document.getElementById('btnLimparAssinatura').onclick = function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    atualizarContagemDePixels();
+  };
+
+  // salvar
+  document.getElementById('btnSalvarAssinatura').onclick = salvarAssinatura;
+
+  // fechar
+  document.getElementById('btnFechar').onclick = function(){
+    try { window.close(); } catch(e){ /* ignore */ }
+  };
+
+  // calcular inicialmente (canvas limpo)
+  atualizarContagemDePixels();
+}
+
+/* calcula pixels 'marcados' e atualiza UI e botão */
+function atualizarContagemDePixels(){
+  const canvas = document.getElementById('assinaturaCanvas');
+  const ctx = canvas.getContext('2d');
+  let pixelsMarcados = 0;
+  try {
+    const w = canvas.width, h = canvas.height;
+    const data = ctx.getImageData(0,0,w,h).data;
+    for (let i = 0; i < data.length; i += 4){
+      const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+      if (a > 10 && (r < 240 || g < 240 || b < 240)) pixelsMarcados++;
+    }
+  } catch (e) {
+    console.warn('Impossível ler pixels da assinatura:', e);
+  }
+
+  const infoEl = document.getElementById('pixelInfo');
+  const saveBtn = document.getElementById('btnSalvarAssinatura');
+
+  if (pixelsMarcados >= PIXELS_MIN){
+    infoEl.textContent = `Assinatura OK — ${pixelsMarcados} pixels`;
+    saveBtn.disabled = false;
+    saveBtn.classList.add('ready');
+  } else {
+    infoEl.textContent = `Assinatura insuficiente — desenhe mais (${pixelsMarcados}/${PIXELS_MIN})`;
+    saveBtn.disabled = true;
+    saveBtn.classList.remove('ready');
+  }
+}
+
+/* upload helper idêntico ao anterior */
+async function uploadBase64ToStorage(base64, bucket){
+  if (!base64) return null;
+  try {
+    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
+    const base64Data = base64.split(',')[1];
+    const bytes = Uint8Array.from(atob(base64Data), c=>c.charCodeAt(0));
+    const { error } = await db.storage.from(bucket).upload(nome, bytes, { contentType: 'image/png', upsert: false });
+    if (error){
+      console.error('Erro upload storage:', error);
+      return null;
+    }
+    const { data } = db.storage.from(bucket).getPublicUrl(nome);
+    return data.publicUrl;
+  } catch (err) { console.error('Erro uploadBase64ToStorage:', err); return null; }
+}
+
+/* salvar assinatura com a mesma validação (dupla) */
+async function salvarAssinatura(){
+  if (!registroAtual) { alert('Registro inválido'); return; }
+
+  const canvas = document.getElementById('assinaturaCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let pixelsMarcados = 0;
+  try {
+    const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    for (let i = 0; i < data.length; i += 4){
+      const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+      if (a > 10 && (r < 240 || g < 240 || b < 240)) pixelsMarcados++;
+    }
+  } catch (e) {
+    console.warn('Falha na validação por pixels (continuando):', e);
+  }
+
+  if (pixelsMarcados < PIXELS_MIN){
+    alert('Assinatura inválida: por favor assine de forma visível (não deixe apenas um pontinho).');
+    setStatus('Assinatura inválida');
     return;
   }
 
-  const urlAss = supabase.storage.from("fotos").getPublicUrl(nome).data.publicUrl;
+  const base64 = canvas.toDataURL('image/png');
 
-  // salva no banco
-  const { error } = await supabase
-    .from("registros")
-    .update({
-      assinatura_url: urlAss,
-      status: "Entregue",
-      delivered_at: new Date().toISOString(),
-      delivered_by: "Morador"
-    })
-    .eq("id", registroId);
+  try {
+    setStatus('Enviando assinatura...');
+    document.getElementById('btnSalvarAssinatura').disabled = true;
 
-  if (error) {
-    alert("Erro ao atualizar o registro.");
-  } else {
-    alert("Assinatura registrada com sucesso!");
-    window.location.href = "https://seusite.com/";
+    const urlAss = await uploadBase64ToStorage(base64, BUCKET_ASSINATURAS);
+    if (!urlAss){ alert('Erro ao enviar assinatura. Tente novamente.'); setStatus('Erro upload'); document.getElementById('btnSalvarAssinatura').disabled = false; return; }
+
+    const agoraIso = new Date().toISOString();
+    const { error } = await db
+      .from('registros')
+      .update({ assinatura_url: urlAss, status: 'Entregue', baixa_em: agoraIso })
+      .eq('id', registroAtual.id);
+
+    if (error){ console.error(error); alert('Erro ao salvar os dados.'); setStatus('Erro salvar'); document.getElementById('btnSalvarAssinatura').disabled = false; return; }
+
+    // atualizar estado local e UI
+    registroAtual.assinatura_url = urlAss;
+    registroAtual.status = 'Entregue';
+    registroAtual.baixa_em = agoraIso;
+
+    preencherDadosTela(registroAtual);
+    decidirSePermiteAssinar(registroAtual);
+
+    alert('Assinatura registrada com sucesso. Obrigado!');
+    setStatus('Assinatura salva');
+  } catch (e) {
+    console.error(e);
+    alert('Erro inesperado ao salvar a assinatura.');
+    setStatus('Erro');
+    document.getElementById('btnSalvarAssinatura').disabled = false;
   }
-};
+}
 
-document.getElementById("btnLimpar").onclick = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-};
+/* roda ao carregar */
+window.addEventListener('load', () => {
+  setTimeout(()=>carregarRegistro(), 80);
+  setInterval(()=>{ if (document.getElementById('assinaturaCanvas').style.display !== 'none') atualizarContagemDePixels(); }, 900);
+});
 </script>
-
 </body>
 </html>
