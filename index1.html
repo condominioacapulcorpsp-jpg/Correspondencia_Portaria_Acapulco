@@ -1,551 +1,927 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Assinatura de Entrega — Portaria Acapulco</title>
-
-<link rel="icon" type="image/jpeg" href="fundo-acapulco.jpg">
-<link rel="shortcut icon" href="fundo-acapulco.jpg">
-<link rel="apple-touch-icon" href="fundo-acapulco.jpg">
-
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Correspondência - Portaria Acapulco (Atualizado)</title>
 <style>
 :root{
   --azul:#1f2b48;
   --verde:#1fb954;
   --fundo:#f0f2f5;
-  --card:#ffffffcc;
-  --muted:#6b7280;
-  --danger:#e74c3c;
-  --success:#16a34a;
-  --sombra: 0 8px 30px rgba(15,23,42,0.12);
-  --radius:12px;
-  --max-width:760px;
-  --assinatura-min-pixels:120;
+  --branco:#ffffff;
+  --cinza:#cfcfcf;
+  --texto:#111;
+  --max-width:1100px;
 }
 
-body{font-family: Inter, "Segoe UI", Arial, sans-serif; margin:0; color:#111;
-  background-image: url("fundo-acapulco.jpg");
-  background-size: cover; background-position:center; background-attachment:fixed;
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-}
-body::before{ content:""; position:fixed; inset:0; background:rgba(0,0,0,0.36); z-index:-1; }
-
+/* dark theme */
 body.tema-escuro{
-  --fundo:#0b1220;
-  color:#e6eef8;
+  --fundo:#0f1720;
+  --branco:#0d1115;
+  --azul:#0b4aa1;
+  --cinza:#2f3a46;
+  --texto:#f5f6f7;
 }
 
-.page{
-  min-height:100vh;
+/* global layout */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, 'Segoe UI', Arial, sans-serif;
+  background-color:var(--fundo);
+  color:var(--texto);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  background-image: url("fundo-acapulco.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  padding:24px 12px;
   display:flex;
-  align-items:center;
   justify-content:center;
-  padding:28px 16px;
+  align-items:flex-start;
 }
-.container{
+
+/* centered app container */
+#app{
   width:100%;
   max-width:var(--max-width);
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:var(--sombra);
+  margin:0 auto;
+  background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.86));
+  border-radius:14px;
+  box-shadow:0 8px 30px rgba(10,10,20,0.18);
   overflow:hidden;
 }
 
-.header{
+header{
   display:flex;
-  gap:12px;
   align-items:center;
-  padding:18px;
-  background:linear-gradient(180deg,var(--azul),#16345f);
-  color:#fff;
-}
-.brand{
-  display:flex;
+  justify-content:space-between;
   gap:12px;
-  align-items:center;
+  padding:12px 18px;
+  background:var(--azul);
+  color:var(--branco);
 }
-.brand img{
-  width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.12);
-}
-.brand h1{font-size:18px;margin:0}
-.header .meta{font-size:13px;color:rgba(255,255,255,0.85)}
+header .brand{display:flex;align-items:center;gap:12px}
+header h1{font-size:18px;margin:0}
 
-.content{
-  padding:18px;
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:14px;
-}
+nav{display:flex;gap:6px;align-items:center}
+nav button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--branco);padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.2s}
+nav button:hover{background:rgba(255,255,255,0.06)}
 
-.info-grid{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.info-block{
-  flex:1;
-  min-width:180px;
+.container-inner{display:flex;flex-direction:column;padding:18px;gap:12px}
+
+/* sections */
+.sections{display:flex;flex-direction:column;gap:16px}
+section{display:none;background:transparent;padding:0}
+section.active{display:block}
+.card{background:rgba(255,255,255,0.98);border-radius:10px;padding:14px;box-shadow:0 4px 14px rgba(0,0,0,0.06)}
+
+h2{margin:0 0 8px 0}
+
+/* inputs/buttons */
+.row{display:flex;gap:8px;align-items:center}
+.row .flex{flex:1}
+input,select,textarea,button{font-size:14px}
+input,select,textarea{padding:10px;border-radius:8px;border:1px solid var(--cinza);background:var(--branco);color:var(--texto);width:100%}
+button.primary{background:var(--azul);color:var(--branco);border:none;padding:10px 12px;border-radius:8px;cursor:pointer;transition:opacity 0.2s}
+button.primary:disabled{opacity:0.6;cursor:not-allowed}
+button.ghost{background:transparent;border:1px solid var(--cinza);padding:8px 10px;border-radius:8px;cursor:pointer}
+button.small{padding:6px 8px;font-size:13px;cursor:pointer}
+
+/* camera, previews */
+.preview-grid{display:flex;flex-wrap:wrap;gap:8px}
+img.preview{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+img.preview.assinatura{width:140px;height:120px;object-fit:contain;padding:6px}
+/* vídeo dentro do app */
+video{width:100%;max-width:360px;border-radius:8px;background:#000}
+
+/* table responsive */
+.table-wrap{overflow:auto;border-radius:8px}
+table{width:100%;border-collapse:collapse;background:var(--branco);min-width:820px}
+th,td{padding:8px;border-bottom:1px solid #eee;text-align:center}
+th{background:var(--azul);color:var(--branco)}
+
+/* status bar */
+#statusBar{position:fixed;right:18px;bottom:18px;background:var(--azul);color:var(--branco);padding:10px 12px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:999;transition:all 0.3s}
+
+/* login modal */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6));display:flex;align-items:center;justify-content:center;z-index:2000}
+#loginBox{width:380px;max-width:92%;padding:18px;border-radius:10px;background:var(--branco);box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+#loginBox h2{text-align:center;margin:0 0 8px 0}
+
+/* modal assinatura full */
+#modalAssinatura{display:none;position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.7));align-items:center;justify-content:center;z-index:9999}
+#modalAssinatura .conteudo-assinatura{width:95%;max-width:900px;height:85%;background:var(--branco);border-radius:10px;padding:12px;display:flex;flex-direction:column}
+#assinaturaCanvas.signature-canvas{flex:1;border:2px dashed var(--azul);border-radius:8px;margin:8px 0;background:linear-gradient(180deg,#fff,#f7f9fb);cursor:crosshair}
+#modalAssinatura .botoes-assinatura{display:flex;gap:8px}
+
+/* edição modal: agora com body rolável e footer fixo */
+#modalEditarRegistro{display:none;position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));align-items:center;justify-content:center;z-index:9999}
+#modalEditarRegistro .conteudo-edicao{
+  width:94%;
+  max-width:1000px;
+  height:85%;
+  background:var(--branco);
+  border-radius:10px;
   padding:12px;
-  border-radius:10px;
-  background:rgba(255,255,255,0.95);
-  border:1px solid rgba(0,0,0,0.04);
-  box-shadow:0 2px 8px rgba(10,10,12,0.03);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
 }
-.info-label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block}
-.info-value{font-weight:600;font-size:15px}
-
-.fotos-grid{display:flex;gap:8px;flex-wrap:wrap}
-.fotos-grid img{width:96px;height:96px;border-radius:8px;object-fit:cover;border:1px solid #e6e6e6;background:#fff}
-
-.assinatura-card{
-  padding:14px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid rgba(0,0,0,0.04);
-  display:flex;flex-direction:column;gap:12px;
+/* área principal rolável no modal */
+#modalEditarRegistro .edicao-body{
+  flex:1;
+  overflow:auto;
+  padding-right:6px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
-.assinatura-title{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
-.hint{font-size:13px;color:var(--muted)}
 
-#assinaturaCanvas{
+#modalEditarRegistro video{
   width:100%;
-  height:260px;
-  border:2px dashed rgba(20,30,50,0.12);
-  border-radius:10px;
-  background:linear-gradient(180deg,#fff,#fbfdff);
-  touch-action:none;
-  display:block;
-  cursor:crosshair;
+  max-height:40vh;
+  border-radius:8px;
+  object-fit:cover;
+  background:#000;
 }
 
-.preview-assinatura{max-width:320px;margin:0 auto;border-radius:8px;border:1px solid #ddd;background:#fff;padding:8px;display:block;object-fit:contain}
+/* previews */
+#modalEditarRegistro .previews{display:flex;flex-wrap:wrap;gap:10px}
 
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{flex:1;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600;transition:opacity 0.2s}
-.btn.primary{background:var(--azul);color:#fff}
-.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.08)}
-.btn.warn{background:var(--danger);color:#fff}
-.btn[disabled]{opacity:0.55;cursor:not-allowed}
+/* footer com botões sempre visível */
+#modalEditarRegistro .edicao-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:flex-end;
+  padding-top:8px;
+  border-top:1px solid #eee;
+  flex-shrink:0;
+  background:linear-gradient(transparent, rgba(0,0,0,0.02));
+  margin-top:8px;
+  padding-bottom:6px;
+}
 
-.status-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.status-pill{display:inline-block;padding:8px 12px;border-radius:999px;font-weight:700;color:#fff}
-.status-pendente{background:#f59e0b}
-.status-entregue{background:var(--success)}
+.foto-edicao{width:110px;height:110px;border-radius:8px;overflow:hidden;border:1px solid #ddd;position:relative}
+.foto-edicao img{width:100%;height:100%;object-fit:cover}
+.foto-edicao button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer}
 
-.bloqueio{padding:12px;border-radius:10px;background:#fff5f5;border:1px solid #f5c6c6;color:#822;}
+/* small helpers */
+.kv{font-size:12px;color:#666}
 
-.footer{padding:12px 18px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.footer small{color:var(--muted);}
+/* highlight temporário */
+.tr-highlight{animation: highlightFlash 2s ease-in-out;}
+@keyframes highlightFlash{0%{background:rgba(255,230,150,0.9)}50%{background:transparent}100%{background:transparent}}
 
-@media(max-width:720px){
-  #assinaturaCanvas{height:220px}
-  .fotos-grid img{width:76px;height:76px}
-  .info-grid{flex-direction:column}
+@media(max-width:800px){
+  header{flex-direction:column;align-items:flex-start;gap:8px}
+  .row{flex-direction:column}
+  #modalEditarRegistro .conteudo-edicao{height:92%}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<div class="page">
-  <div class="container" role="main" aria-labelledby="titulo">
-    <header class="header" role="banner">
-      <div class="brand" aria-hidden="true">
-        <img src="fundo-acapulco.jpg" alt="Acapulco" />
-        <div>
-          <h1 id="titulo">Confirmação de Entrega</h1>
-          <div class="meta">Portaria Acapulco — Assinatura segura</div>
-        </div>
-      </div>
-      <div style="margin-left:auto">
-        <button id="toggleTemaBtn" class="btn ghost" aria-pressed="false" title="Alternar tema">🌗 Tema</button>
-      </div>
-    </header>
-
-    <main class="content" role="main">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="info-grid">
-          <div class="info-block">
-            <span class="info-label">Morador</span>
-            <div id="nomeMorador" class="info-value">—</div>
-          </div>
-          <div class="info-block">
-            <span class="info-label">Entrega</span>
-            <div id="tipoEntrega" class="info-value">—</div>
-          </div>
-          <div class="info-block">
-            <span class="info-label">Recebida em</span>
-            <div id="dataRecebida" class="info-value">—</div>
-          </div>
-        </div>
-
-        <div class="info-grid">
-          <div class="info-block" style="flex:1.4">
-            <span class="info-label">Fotos da encomenda</span>
-            <div id="fotosContainer" class="fotos-grid hint">Carregando...</div>
-          </div>
-
-          <div class="info-block" style="max-width:400px;min-width:350px">
-            <span class="info-label">Status</span>
-            <div style="margin-top:6px" id="statusEntregaWrap">
-              <span id="statusEntrega" class="status-pill status-pendente">Pendente</span>
-            </div>
-            <div style="margin-top:10px">
-              <span class="info-label">Assinatura já registrada</span>
-              <img id="assinaturaExistente" class="preview-assinatura" style="display:none" alt="Assinatura existente" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section class="assinatura-card" aria-labelledby="assinaturaTitle">
-        <div class="assinatura-title">
-          <div>
-            <h2 id="assinaturaTitle" style="margin:0;font-size:16px">Assine para confirmar</h2>
-            <div class="hint">Assine abaixo com o dedo ou mouse. Só é possível assinar uma vez.</div>
-          </div>
-          <div id="pixelInfo" class="hint" aria-live="polite">—</div>
-        </div>
-
-        <canvas id="assinaturaCanvas" role="img" aria-label="Área de assinatura"></canvas>
-
-        <div class="actions" style="display:flex;align-items:center">
-          <button id="btnLimparAssinatura" class="btn ghost" type="button">Limpar</button>
-          <button id="btnSalvarAssinatura" class="btn primary" type="button" disabled>Salvar assinatura</button>
-          <button id="btnFechar" class="btn ghost" type="button">Fechar</button>
-        </div>
-
-        <div id="mensagemBloqueio" style="display:none" class="bloqueio">
-          Esta entrega já foi confirmada anteriormente. Em caso de dúvida, contate a portaria.
-        </div>
-
-      </section>
-
-    </main>
-
-    <footer class="footer" role="contentinfo">
-      <small>Portaria Acapulco • Sistema de confirmação</small>
-      <div id="statusBar"><span id="statusText">Carregando...</span></div>
-    </footer>
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>Login - Portaria Acapulco</h2>
+    <input id="loginUser" placeholder="Usuário" autocomplete="username" />
+    <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" />
+    <button id="btnEntrar" class="primary" style="margin-top:8px; width: 100%">Entrar</button>
+    <p class="kv" style="text-align:center;margin-top:10px">Acesso restrito ao administrador.</p>
   </div>
 </div>
 
-<!-- Firebase SDKs (Modular Version) -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, updatedoc as updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+<div id="app" style="display:none;">
+  <header>
+    <div class="brand">
+      <img src="fundo-acapulco.jpg" alt="Logo Acapulco"
+           style="width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 6px rgba(0,0,0,0.12);"/>
+      <div>
+        <h1>Correspondência - Portaria Acapulco</h1>
+        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Realtime • Protegido</div>
+      </div>
+    </div>
 
-  // TODO: Substitua com as credenciais reais do seu projeto Firebase (ex: PortariaCondominio)
-  const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_AUTH_DOMAIN.firebaseapp.com",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_STORAGE_BUCKET.appspot.com",
-    messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-    appId: "SEU_APP_ID"
+    <nav>
+      <button onclick="mostrarAba('registrar')">📦 Registrar</button>
+      <button onclick="mostrarAba('registros')">🗂 Registros</button>
+      <button onclick="mostrarAba('contatos')">👥 Contatos</button>
+      <button id="toggleTemaBtn" onclick="alternarTema()">🌗 Tema</button>
+    </nav>
+  </header>
+
+  <div class="container-inner">
+    <div class="sections">
+
+      <section id="registrar" class="active card">
+        <h2>Registrar Correspondência</h2>
+        <div class="row">
+          <input id="pesquisaContato" placeholder="🔍 Pesquisar contato..." oninput="filtrarContatos()" class="flex" />
+          <select id="contatoSelect" style="width:320px;max-width:40%"></select>
+        </div>
+
+        <div class="row">
+          <select id="descricao" style="width:320px;max-width:40%">
+            <option value="">Selecione o tipo de entrega</option>
+            <option value="Correios">Correios</option>
+            <option value="Mercado Livre">Mercado Livre</option>
+            <option value="Shopee">Shopee</option>
+            <option value="NetShoes">NetShoes</option>
+            <option value="C&A">C&A</option>
+            <option value="RiaChuelo">RiaChuelo</option>
+            <option value="MagaLu">MagaLu</option>
+            <option value="Loggi">Loggi</option>
+            <option value="Outros">Outros</option>
+          </select>
+
+          <div style="display:flex;gap:8px;align-items:center">
+            <button onclick="abrirCamera()" class="ghost">📷 Abrir Câmera</button>
+            <button id="capturarBtn" style="display:none;" onclick="capturarFoto()" class="primary">📸 Capturar</button>
+            <button onclick="fecharCamera()" class="ghost">✖ Fechar</button>
+          </div>
+        </div>
+
+        <video id="video" autoplay playsinline style="display:none;"></video>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+        <div class="card" style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:600">Pré-visualização das fotos</div>
+            <div class="kv">Máx. 3 fotos por registro</div>
+          </div>
+          <div id="fotoPreview" class="preview-grid" style="margin-top:10px"></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <button id="btnSalvarRegistro" class="primary" onclick="registrarCorrespondencia(this)">💾 Salvar Registro</button>
+          <div class="kv">Tudo salvo diretamente na nuvem (Supabase)</div>
+        </div>
+      </section>
+
+      <section id="registros" class="card">
+        <h2>Registros de Correspondências</h2>
+
+        <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+          <input id="buscarRegistros" placeholder="🔎 Filtrar registros (nome, entrega, apartamento, status, data)..." class="flex" oninput="filtrarRegistros()" />
+          <button class="small" onclick="carregarRegistrosRemotos()">⟲ Recarregar</button>
+          <button class="small ghost" onclick="document.getElementById('buscarRegistros').value=''; filtrarRegistros();">Limpar</button>
+        </div>
+
+        <div class="table-wrap card">
+          <table id="tabelaRegistros">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Entrega</th>
+                <th>Fotos</th>
+                <th>Assinatura</th>
+                <th>Datas</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="contatos" class="card">
+        <h2>Contatos</h2>
+        <div class="row">
+          <input id="pesquisaContatoContatos" placeholder="🔍 Pesquisar contato (nome ou apartamento)..." oninput="renderizarContatosUI()" class="flex" />
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="nome" placeholder="Nome" />
+          <input id="telefone" placeholder="Telefone (ex: 11988887777)" />
+          <input id="apartamento" placeholder="Apartamento" style="width:160px;max-width:30%" />
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="btnSalvarContato" onclick="salvarContato(this)" class="primary">💾 Salvar Contato</button>
+          <button class="small" onclick="carregarContatos()">⟲ Recarregar</button>
+        </div>
+
+        <div class="table-wrap" style="margin-top:10px">
+          <table id="tabelaContatos">
+            <thead><tr><th>Nome</th><th>Telefone</th><th>Apartamento</th><th>Ações</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div id="modalAssinatura">
+    <div class="conteudo-assinatura">
+      <h3 style="text-align:center;margin:6px 0">✍ Coletar Assinatura</h3>
+      <canvas id="assinaturaCanvas" class="signature-canvas"></canvas>
+      <div class="botoes-assinatura">
+        <button id="btnSalvarAssinatura" class="primary" onclick="salvarAssinatura(this)">Salvar Assinatura</button>
+        <button class="ghost" onclick="limparAssinatura()">Limpar</button>
+        <button class="ghost" onclick="fecharModalAssinatura()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalEditarRegistro">
+    <div class="conteudo-edicao">
+      <div class="edicao-body">
+        <h3>✏ Editar Registro</h3>
+
+        <div>
+          <strong>Fotos atuais:</strong>
+          <div id="fotosAtuaisEdicao" class="previews" style="margin-top:8px"></div>
+        </div>
+
+        <div>
+          <strong>Novas fotos:</strong>
+          <div id="previewEdicao" class="previews" style="margin-top:8px"></div>
+        </div>
+
+        <div>
+          <video id="videoEdicao" autoplay playsinline style="display:none;"></video>
+        </div>
+
+        <div>
+          <canvas id="canvasEdicao" width="640" height="480" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <div class="edicao-actions">
+        <div style="margin-right:auto" class="kv">Máx. 3 imagens.</div>
+        <button onclick="abrirCameraEdicao()" class="ghost">📷 Câmera</button>
+        <button id="btnCapturarEdicao" style="display:none;" onclick="capturarFotoEdicao()" class="primary">📸 Capturar</button>
+        <button onclick="fecharModalEdicao()" class="ghost">Cancelar</button>
+        <button id="btnSalvarEdicao" onclick="salvarEdicaoRegistro(this)" class="primary">💾 Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="statusBar">Status: <span id="statusText">Pronto</span></div>
+</div>
+
+<script>
+/* ========== Debug global ========== */
+window.addEventListener('error', function(ev){
+  console.error('Erro global capturado:', ev.error || ev.message || ev);
+});
+
+/* ========== Supabase config ========== */
+const SUPABASE_URL = "https://vdxiphzxdpwggydezbzw.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeGlwaHp4ZHB3Z2d5ZGV6Ynp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDQxMTQsImV4cCI6MjA3ODQ4MDExNH0.IQLGlZlcgEw8-E_TbnfZwrzs8eJt0Ky4WtYrmyCr1aI";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const BUCKET_FOTOS = "fotos";
+const BUCKET_ASSINATURAS = "assinaturas";
+const DELETE_PASSWORD = "12345";
+
+/* ========== State ========== */
+let contatos = [];
+let registros = [];
+let contatosExcluidos = [];
+let cameraStream = null;
+let fotosTemporarias = [];
+let registroLocalParaAssinatura = null;
+let contatoEmEdicao = null;
+
+let registroEmEdicao = null;
+let fotosExistentesEdicao = [];
+let fotosParaRemover = [];
+let fotosNovasEdicao = [];
+let streamEdicao = null;
+
+/* ========== Util ========== */
+function setStatus(msg){ const el = document.getElementById("statusText"); if (el) el.textContent = msg; }
+
+function mostrarAba(id){
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+  const target = document.getElementById(id);
+  if (target) target.classList.add("active");
+  setStatus("Pronto");
+}
+
+function alternarTema(){
+  document.body.classList.toggle('tema-escuro');
+  const theme = document.body.classList.contains('tema-escuro') ? 'escuro' : 'claro';
+  try { localStorage.setItem('acapulco_tema_v2', theme); } catch(e){}
+  const btn = document.getElementById('toggleTemaBtn');
+  if (btn) btn.textContent = theme === 'escuro' ? '☀️ Claro' : '🌗 Tema';
+}
+
+/* Helper de Loading de Botão */
+function setBtnLoading(btn, isLoading, originalText = "") {
+  if (!btn) return;
+  if (isLoading) {
+    btn.dataset.originalText = originalText || btn.textContent;
+    btn.innerHTML = `⏳ Aguarde...`;
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = btn.dataset.originalText;
+    btn.disabled = false;
+  }
+}
+
+/* ========== Login ========== */
+const LOGIN_USER = "admin";
+const LOGIN_PASS = "Ckl253115@";
+
+function fazerLogin(){
+  try {
+    const u = document.getElementById("loginUser").value.trim();
+    const p = document.getElementById("loginPass").value;
+    if (u === LOGIN_USER && p === LOGIN_PASS){
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      setStatus("Logado como administrador");
+      carregarContatos();
+      carregarRegistrosRemotos();
+    } else {
+      alert("Usuário ou senha inválidos.");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('btnEntrar').addEventListener('click', fazerLogin);
+  ['loginUser','loginPass'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { e.preventDefault(); fazerLogin(); }
+    });
+  });
+  try { conectarRealtime(); } catch(e){}
+  
+  // Load Theme
+  const saved = localStorage.getItem('acapulco_tema_v2');
+  if (saved === 'escuro') {
+    document.body.classList.add('tema-escuro');
+    document.getElementById('toggleTemaBtn').textContent = '☀️ Claro';
+  }
+});
+
+/* ========== Contatos ========== */
+async function carregarContatos(){
+  try {
+    setStatus("Carregando contatos...");
+    const { data, error } = await db.from('contatos').select('*').order('id',{ascending:false});
+    if (error) throw error;
+    contatos = (data || []).map(x => ({ supabase_id: x.id, nome: x.nome, telefone: x.telefone, apartamento: x.apartamento }));
+    renderizarContatosUI();
+    setStatus("Contatos carregados");
+  } catch (err) { console.warn(err); setStatus("Erro ao carregar contatos"); }
+}
+
+function renderizarContatosUI(){
+  const tbody = document.querySelector("#tabelaContatos tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  const termo = (document.getElementById("pesquisaContatoContatos")?.value || "").toLowerCase();
+
+  contatos.forEach(c => {
+    if (c.supabase_id && contatosExcluidos.includes(c.supabase_id)) return;
+    const nomeLower = (c.nome || "").toLowerCase();
+    const aptLower  = (c.apartamento || "").toLowerCase();
+    if (termo && !nomeLower.includes(termo) && !aptLower.includes(termo)) return;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${c.nome}</td><td>${c.telefone||"-"}</td><td>${c.apartamento||"-"}</td>
+      <td>
+        <button class="small" onclick="editarContatoLocal('${c.supabase_id}')">✏</button>
+        <button class="small" onclick="compartilharContatoWhats('${c.supabase_id}')">📲</button>
+        <button class="small" onclick="excluirContatoProtegido('${c.supabase_id}')">🗑</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  atualizarSelectContatos();
+}
+
+function atualizarSelectContatos(){
+  const sel = document.getElementById("contatoSelect");
+  if (!sel) return;
+  sel.innerHTML = "<option value=''>Selecione um contato</option>";
+  contatos.forEach(c => {
+    if (c.supabase_id && contatosExcluidos.includes(c.supabase_id)) return;
+    const opt = document.createElement("option");
+    opt.value = c.supabase_id;
+    opt.textContent = `${c.nome}${c.apartamento ? ' - '+c.apartamento : ''}`;
+    sel.appendChild(opt);
+  });
+}
+
+function filtrarContatos(){
+  const termo = document.getElementById("pesquisaContato").value.toLowerCase();
+  const sel = document.getElementById("contatoSelect");
+  sel.innerHTML = "<option value=''>Selecione um contato</option>";
+  contatos.forEach(c => {
+    if (!termo || c.nome.toLowerCase().includes(termo) || (c.apartamento||"").toLowerCase().includes(termo)) {
+      const opt = document.createElement("option");
+      opt.value = c.supabase_id;
+      opt.textContent = `${c.nome}${c.apartamento ? ' - '+c.apartamento : ''}`;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+function compartilharContatoWhats(supabaseId){
+  const c = contatos.find(x => x.supabase_id == supabaseId);
+  if (!c || !c.telefone) return alert("Contato sem telefone cadastrado.");
+  const hora = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const entrega = (document.getElementById("descricao")?.value || "").trim();
+  const msg = `Olá ${c.nome}! Chegou entrega${entrega ? ' '+entrega : ''} para você às ${hora}. Atenciosamente, Portaria Acapulco`;
+  window.open(`https://wa.me/55${c.telefone.replace(/\D/g, "")}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+async function salvarContato(btnRef){
+  const nome = document.getElementById("nome").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  const apartamento = document.getElementById("apartamento").value.trim();
+
+  if (!nome) return alert("Informe o nome!");
+  
+  // Evitar duplicidade exata
+  if (!contatoEmEdicao && contatos.some(c => c.nome.toLowerCase() === nome.toLowerCase() && (c.apartamento||"").toLowerCase() === apartamento.toLowerCase())){
+    return alert("Contato com mesmo nome e apartamento já existe.");
+  }
+
+  setBtnLoading(btnRef, true, "💾 Salvar Contato");
+  try {
+    if (contatoEmEdicao){
+      const { data, error } = await db.from('contatos').update({ nome, telefone, apartamento }).eq('id', contatoEmEdicao).select();
+      if (error) throw error;
+      const c = contatos.find(x => x.supabase_id == contatoEmEdicao);
+      if (c && data[0]) { Object.assign(c, data[0]); }
+    } else {
+      const { data, error } = await db.from('contatos').insert([{ nome, telefone, apartamento }]).select().single();
+      if (error) throw error;
+      contatos.unshift({ supabase_id: data.id, nome: data.nome, telefone: data.telefone, apartamento: data.apartamento });
+    }
+
+    document.getElementById("nome").value=""; document.getElementById("telefone").value=""; document.getElementById("apartamento").value="";
+    contatoEmEdicao = null;
+    renderizarContatosUI();
+    setStatus("Contato salvo");
+  } catch (err) {
+    alert("Erro ao salvar contato."); console.error(err);
+  } finally {
+    setBtnLoading(btnRef, false);
+  }
+}
+
+function editarContatoLocal(id){
+  const c = contatos.find(x => x.supabase_id == id);
+  if (!c) return;
+  document.getElementById("nome").value = c.nome;
+  document.getElementById("telefone").value = c.telefone || "";
+  document.getElementById("apartamento").value = c.apartamento || "";
+  contatoEmEdicao = id;
+}
+
+async function excluirContatoProtegido(id){
+  if (prompt("Digite a senha:") !== DELETE_PASSWORD) return alert("Senha incorreta.");
+  if (!confirm("Confirmar exclusão?")) return;
+  try {
+    await db.from('contatos').delete().eq('id', id);
+    contatos = contatos.filter(c => c.supabase_id != id);
+    renderizarContatosUI();
+  } catch(e) { alert("Erro ao excluir."); }
+}
+
+/* ========== Câmera ========== */
+async function abrirCamera(){
+  const video = document.getElementById("video");
+  const btn = document.getElementById("capturarBtn");
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
+    video.srcObject = cameraStream;
+    video.style.display = "block";
+    btn.style.display = "block";
+  } catch (err) {
+    alert("Erro ao acessar câmera.");
+  }
+}
+
+function capturarFoto(){
+  const canvas = document.getElementById("canvas");
+  const video = document.getElementById("video");
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  fotosTemporarias.push(canvas.toDataURL("image/png"));
+
+  const previewDiv = document.getElementById("fotoPreview");
+  previewDiv.innerHTML = "";
+  fotosTemporarias.forEach(f => {
+    const img = document.createElement("img");
+    img.src = f; img.className = "preview foto";
+    previewDiv.appendChild(img);
+  });
+}
+
+function fecharCamera(){
+  const video = document.getElementById("video");
+  if (cameraStream) { cameraStream.getTracks().forEach(t=>t.stop()); cameraStream = null; }
+  video.srcObject = null; // Impede que a câmera fique presa em background
+  video.style.display = "none"; document.getElementById("capturarBtn").style.display = "none";
+}
+
+/* ========== Upload Storage ========== */
+async function uploadBase64ToStorage(base64, bucket){
+  if (!base64) return null;
+  try {
+    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
+    // Método otimizado (evita travamentos em Uint8Array com arquivos pesados)
+    const res = await fetch(base64);
+    const blob = await res.blob();
+    
+    const { error } = await db.storage.from(bucket).upload(nome, blob, { contentType: 'image/png' });
+    if (error) return null;
+    return db.storage.from(bucket).getPublicUrl(nome).data.publicUrl;
+  } catch (err) { console.error("Upload erro:", err); return null; }
+}
+
+function extrairNomeArquivoDeUrl(url){
+  try { return new URL(url).pathname.split('/').pop(); } catch(e){ return null; }
+}
+
+/* ========== Registros ========== */
+async function registrarCorrespondencia(btnRef){
+  const contatoId = document.getElementById("contatoSelect").value;
+  const entrega = document.getElementById("descricao").value;
+  if (!contatoId || !entrega || !fotosTemporarias.length) return alert("Preencha todos os campos e tire pelo menos 1 foto!");
+
+  const contato = contatos.find(c => c.supabase_id == contatoId);
+  setBtnLoading(btnRef, true, "💾 Salvar Registro");
+  
+  try {
+    setStatus("Enviando fotos...");
+    const urls = [];
+    for (let i=0; i<Math.min(3, fotosTemporarias.length); i++){
+      urls.push(await uploadBase64ToStorage(fotosTemporarias[i], BUCKET_FOTOS));
+    }
+
+    const payload = {
+      contato_id: contatoId, nome: contato.nome, entrega,
+      foto_url: urls[0]||null, foto_url_2: urls[1]||null, foto_url_3: urls[2]||null,
+      data: new Date().toISOString(), status: "Pendente"
+    };
+
+    const { data, error } = await db.from('registros').insert([payload]).select().single();
+    if (error) throw error;
+
+    registros.unshift({ supabase_id: data.id, contato_supabase_id: data.contato_id, nome: data.nome, entrega: data.entrega, foto_url: data.foto_url, foto_url_2: data.foto_url_2, foto_url_3: data.foto_url_3, data: data.data, status: data.status });
+    
+    fotosTemporarias = [];
+    document.getElementById("fotoPreview").innerHTML = "";
+    document.getElementById("descricao").value = "";
+    fecharCamera();
+    atualizarTabelaRegistrosUI();
+    setStatus("Registro salvo!");
+  } catch (e) {
+    alert("Erro ao salvar."); console.error(e);
+  } finally {
+    setBtnLoading(btnRef, false);
+  }
+}
+
+function atualizarTabelaRegistrosUI(){
+  const tbody = document.querySelector("#tabelaRegistros tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+  registros.forEach(r => {
+    const urls = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
+    const fotosHtml = urls.length ? urls.map(u => `<img class="preview foto" src="${u}">`).join("") : "-";
+    const assinHtml = r.assinatura_url ? `<img class="preview assinatura" src="${r.assinatura_url}">` : "-";
+    const datasHtml = r.baixa_em ? `${new Date(r.data).toLocaleString()}<br><small>Baixa: ${new Date(r.baixa_em).toLocaleString()}</small>` : new Date(r.data).toLocaleString();
+    
+    const tr = document.createElement("tr");
+    tr.dataset.supabaseId = r.supabase_id;
+    tr.innerHTML = `
+      <td>${r.nome}</td><td>${r.entrega}</td><td>${fotosHtml}</td><td>${assinHtml}</td><td>${datasHtml}</td><td>${r.status}</td>
+      <td>
+        <div class="menu-baixa-container" style="position:relative; display:inline-block">
+          <button class="small" onclick="toggleMenuBaixa(this)">Baixar ⬇</button>
+          <div class="menu-baixa-opcoes" style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; border-radius:4px; z-index:100; padding:4px;">
+            <button class="small ghost" style="width:100%; margin-bottom:4px" onclick="acaoBaixaAssinarNaTela('${r.supabase_id}', this)">Assinar Tela</button>
+            <button class="small ghost" style="width:100%" onclick="acaoBaixaGerarLink('${r.supabase_id}', this)">Gerar Link</button>
+          </div>
+        </div>
+        ${!r.assinatura_url ? `<button class="small" onclick="abrirEdicaoRegistro('${r.supabase_id}')">✏</button>` : `<button class="small" disabled>✏</button>`}
+        <button class="small" onclick="excluirRegistroProtegido('${r.supabase_id}')">🗑</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleMenuBaixa(btn){
+  const m = btn.nextElementSibling;
+  const isVis = m.style.display === 'block';
+  document.querySelectorAll('.menu-baixa-opcoes').forEach(el=>el.style.display='none');
+  m.style.display = isVis ? 'none' : 'block';
+}
+
+function acaoBaixaAssinarNaTela(id, btn){ abrirAssinaturaLocal(id); btn.parentElement.style.display='none'; }
+
+function acaoBaixaGerarLink(id, btn){
+  const r = registros.find(x=>x.supabase_id==id);
+  const c = contatos.find(x=>x.supabase_id==r.contato_supabase_id);
+  const link = window.location.origin + window.location.pathname.replace(/[^\/]*$/, "") + "baixa.html?registro=" + id;
+  if(c && c.telefone) window.open(`https://wa.me/55${c.telefone.replace(/\D/g,"")}?text=Assine a retirada: ${encodeURIComponent(link)}`);
+  else alert(`Copie e envie:\n${link}`);
+  btn.parentElement.style.display='none';
+}
+
+async function excluirRegistroProtegido(id){
+  if(prompt("Senha para excluir:") !== DELETE_PASSWORD) return alert("Senha incorreta");
+  if(!confirm("Confirmar exclusão?")) return;
+  const r = registros.find(x=>x.supabase_id == id);
+  try{
+    await db.from('registros').delete().eq('id', id);
+    // Limpar fotos do Storage
+    const urls = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
+    if(urls.length) await db.storage.from(BUCKET_FOTOS).remove(urls.map(extrairNomeArquivoDeUrl));
+    if(r.assinatura_url) await db.storage.from(BUCKET_ASSINATURAS).remove([extrairNomeArquivoDeUrl(r.assinatura_url)]);
+    
+    registros = registros.filter(x=>x.supabase_id != id);
+    atualizarTabelaRegistrosUI();
+  }catch(e){ alert("Erro ao excluir."); }
+}
+
+async function carregarRegistrosRemotos(){
+  try{
+    setStatus("Carregando registros...");
+    const { data } = await db.from('registros').select('*').order('id',{ascending:false}).limit(200);
+    registros = (data||[]).map(r=>({
+      supabase_id: r.id, contato_supabase_id: r.contato_id, nome: r.nome, entrega: r.entrega,
+      foto_url: r.foto_url, foto_url_2: r.foto_url_2, foto_url_3: r.foto_url_3,
+      assinatura_url: r.assinatura_url, data: r.data, baixa_em: r.baixa_em, status: r.status||'Pendente'
+    }));
+    atualizarTabelaRegistrosUI();
+    setStatus("Registros carregados");
+  }catch(e){}
+}
+
+function filtrarRegistros(){
+  const termo = (document.getElementById('buscarRegistros')?.value || '').toLowerCase().trim();
+  Array.from(document.querySelectorAll('#tabelaRegistros tbody tr')).forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(termo) ? '' : 'none';
+  });
+}
+
+/* ========== Assinatura ========== */
+function abrirAssinaturaLocal(id){
+  registroLocalParaAssinatura = id;
+  document.getElementById("modalAssinatura").style.display = "flex";
+  prepararCanvasAssinatura();
+}
+
+function prepararCanvasAssinatura(){
+  const c = document.getElementById("assinaturaCanvas");
+  const modal = document.querySelector('#modalAssinatura .conteudo-assinatura');
+  const rect = modal ? modal.getBoundingClientRect() : {width: window.innerWidth, height: window.innerHeight};
+  
+  c.style.width = Math.max(rect.width - 40, 300) + "px";
+  c.style.height = Math.max(rect.height - 150, 200) + "px";
+  c.width = parseInt(c.style.width);
+  c.height = parseInt(c.style.height);
+
+  const ctx = c.getContext("2d");
+  ctx.lineWidth = 3; ctx.lineJoin = ctx.lineCap = "round"; ctx.strokeStyle = "#111";
+  
+  let drawing = false, last = {x:0,y:0};
+  const getPos = (e) => {
+    const r = c.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+  c.onpointerdown = e => { drawing = true; last = getPos(e); c.setPointerCapture(e.pointerId); };
+  c.onpointermove = e => { if(!drawing)return; const p = getPos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; };
+  c.onpointerup = c.onpointercancel = e => drawing = false;
+  c.style.touchAction = "none";
+}
 
-  let registroAtual = null;
-  const PIXELS_MIN = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--assinatura-min-pixels')) || 120;
+function limparAssinatura(){ prepararCanvasAssinatura(); }
+function fecharModalAssinatura(){ document.getElementById("modalAssinatura").style.display = "none"; registroLocalParaAssinatura = null; }
 
-  function setStatus(msg){ const s = document.getElementById('statusText'); if (s) s.textContent = msg; }
-
-  /* TEMA persistente */
-  (function(){
-    const btn = document.getElementById('toggleTemaBtn');
-    const saved = localStorage.getItem('acapulco_tema_v2');
-    if (saved === 'escuro') document.body.classList.add('tema-escuro');
-    btn.addEventListener('click', ()=>{
-      const ativo = document.body.classList.toggle('tema-escuro');
-      localStorage.setItem('acapulco_tema_v2', ativo ? 'escuro' : 'claro');
-      btn.setAttribute('aria-pressed', String(ativo));
-    });
-  })();
-
-  function obterIdRegistroDaUrl(){
-    return new URLSearchParams(window.location.search).get('registro');
-  }
-
-  /* Carregar registro do Firestore */
-  async function carregarRegistro(){
-    const id = obterIdRegistroDaUrl();
-    if (!id){ setStatus('Registro não informado'); alert('Registro inválido: parâmetro "registro" ausente na URL.'); return; }
-
-    try {
-      setStatus('Carregando entrega...');
-      const docRef = doc(db, 'registros', id);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()){
-        setStatus('Registro não encontrado');
-        alert('Não foi possível localizar a entrega no sistema.');
-        return;
-      }
-      
-      registroAtual = { id: docSnap.id, ...docSnap.data() };
-      preencherDadosTela(registroAtual);
-      decidirSePermiteAssinar(registroAtual);
-      setStatus('Pronto');
-    } catch (e) {
-      console.error(e);
-      setStatus('Erro ao carregar');
-      alert('Erro ao carregar a entrega. Verifique sua conexão.');
-    }
-  }
-
-  function preencherDadosTela(reg){
-    document.getElementById('nomeMorador').textContent = reg.nome || '-';
-    document.getElementById('tipoEntrega').textContent = reg.entrega || '-';
-    document.getElementById('dataRecebida').textContent = reg.data ? (reg.data.toDate ? reg.data.toDate().toLocaleString() : new Date(reg.data).toLocaleString()) : '-';
-
-    const statusWrap = document.getElementById('statusEntrega');
-    if ((reg.status && reg.status.toLowerCase() === 'entregue') || reg.assinatura_url){
-      statusWrap.textContent = 'Entregue';
-      statusWrap.className = 'status-pill status-entregue';
-    } else {
-      statusWrap.textContent = 'Pendente';
-      statusWrap.className = 'status-pill status-pendente';
-    }
-
-    const fotosContainer = document.getElementById('fotosContainer');
-    fotosContainer.innerHTML = '';
-    const urls = [reg.foto_url, reg.foto_url_2, reg.foto_url_3].filter(Boolean);
-    if (urls.length){
-      urls.forEach(u=>{
-        const img = document.createElement('img');
-        img.src = u;
-        img.alt = 'Foto da encomenda';
-        img.onclick = () => window.open(u, '_blank');
-        img.style.cursor = 'pointer';
-        fotosContainer.appendChild(img);
-      });
-    } else {
-      fotosContainer.textContent = 'Nenhuma foto registrada.';
-    }
-
-    const assImg = document.getElementById('assinaturaExistente');
-    if (reg.assinatura_url){
-      assImg.src = reg.assinatura_url;
-      assImg.style.display = 'block';
-    } else {
-      assImg.style.display = 'none';
-    }
-  }
-
-  function decidirSePermiteAssinar(reg){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const bloqueio = document.getElementById('mensagemBloqueio');
-    const jaTemAss = !!reg.assinatura_url || (reg.status && reg.status.toLowerCase() === 'entregue');
-
-    if (jaTemAss){
-      canvas.style.display = 'none';
-      bloqueio.style.display = 'block';
-      document.getElementById('btnSalvarAssinatura').style.display = 'none';
-      document.getElementById('btnLimparAssinatura').style.display = 'none';
-      document.getElementById('pixelInfo').style.display = 'none';
-    } else {
-      canvas.style.display = 'block';
-      bloqueio.style.display = 'none';
-      prepararCanvasAssinatura();
-    }
-  }
-
-  function prepararCanvasAssinatura(){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const ratio = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.round(rect.width * ratio);
-    canvas.height = Math.round(rect.height * ratio);
-    canvas.style.width = `${rect.width}px`;
-    canvas.style.height = `${rect.height}px`;
-    ctx.scale(ratio, ratio);
-
-    ctx.lineWidth = 2.5;
-    ctx.lineJoin = ctx.lineCap = 'round';
-    ctx.strokeStyle = '#111';
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    let drawing = false;
-    let last = {x:0, y:0};
-
-    function posFromEvent(e){
-      const r = canvas.getBoundingClientRect();
-      let cx = e.clientX, cy = e.clientY;
-      if (e.touches && e.touches.length > 0){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
-      return { x: cx - r.left, y: cy - r.top };
-    }
-
-    function start(e){
-      drawing = true;
-      last = posFromEvent(e);
-      if(e.cancelable) e.preventDefault();
-    }
-    function move(e){
-      if (!drawing) return;
-      const p = posFromEvent(e);
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      last = p;
-      if(e.cancelable) e.preventDefault();
-    }
-    function end(e){
-      drawing = false;
-      atualizarContagemDePixels();
-    }
-
-    canvas.addEventListener('touchstart', start, {passive:false});
-    canvas.addEventListener('touchmove', move, {passive:false});
-    canvas.addEventListener('touchend', end, {passive:false});
+async function salvarAssinatura(btnRef){
+  const r = registros.find(x=>x.supabase_id == registroLocalParaAssinatura);
+  if(!r || r.assinatura_url) return alert("Inválido ou já assinado.");
+  
+  setBtnLoading(btnRef, true, "Salvar Assinatura");
+  try {
+    const b64 = document.getElementById("assinaturaCanvas").toDataURL("image/png");
+    const url = await uploadBase64ToStorage(b64, BUCKET_ASSINATURAS);
+    const baixa = new Date().toISOString();
+    await db.from('registros').update({ assinatura_url: url, status: 'Entregue', baixa_em: baixa }).eq('id', r.supabase_id);
     
-    canvas.addEventListener('mousedown', start, {passive:false});
-    canvas.addEventListener('mousemove', move, {passive:false});
-    canvas.addEventListener('mouseup', end, {passive:false});
-    canvas.addEventListener('mouseleave', end, {passive:false});
+    r.assinatura_url = url; r.status = "Entregue"; r.baixa_em = baixa;
+    atualizarTabelaRegistrosUI();
+    fecharModalAssinatura();
+  } catch(e){ alert("Erro ao salvar assinatura."); } finally { setBtnLoading(btnRef, false); }
+}
 
-    document.getElementById('btnLimparAssinatura').onclick = function(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      atualizarContagemDePixels();
-    };
+/* ========== Edição ========== */
+function abrirEdicaoRegistro(id){
+  const r = registros.find(x=>x.supabase_id == id);
+  if(!r || r.assinatura_url) return;
+  registroEmEdicao = r;
+  fotosExistentesEdicao = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
+  fotosNovasEdicao = []; fotosParaRemover = [];
+  document.getElementById("modalEditarRegistro").style.display = "flex";
+  renderizarFotosEdicao();
+}
 
-    document.getElementById('btnSalvarAssinatura').onclick = salvarAssinatura;
-    document.getElementById('btnFechar').onclick = function(){
-      try { window.close(); } catch(e){ }
-    };
-
-    atualizarContagemDePixels();
-  }
-
-  function atualizarContagemDePixels(){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-    let pixelsMarcados = 0;
-    try {
-      const w = canvas.width, h = canvas.height;
-      const data = ctx.getImageData(0,0,w,h).data;
-      for (let i = 0; i < data.length; i += 4){
-        if (data[i+3] > 10) pixelsMarcados++;
-      }
-    } catch (e) {
-      console.warn('Impossível ler pixels:', e);
-    }
-
-    const infoEl = document.getElementById('pixelInfo');
-    const saveBtn = document.getElementById('btnSalvarAssinatura');
-
-    if (pixelsMarcados >= PIXELS_MIN){
-      infoEl.textContent = `Assinatura válida.`;
-      infoEl.style.color = "var(--success)";
-      saveBtn.disabled = false;
-    } else {
-      infoEl.textContent = `Assinatura insuficiente — desenhe mais`;
-      infoEl.style.color = "var(--muted)";
-      saveBtn.disabled = true;
-    }
-  }
-
-  /* Upload helper para o Firebase Storage */
-  async function uploadBase64ToFirebaseStorage(base64){
-    if (!base64) return null;
-    try {
-      const nome = `assinaturas/${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
-      const res = await fetch(base64);
-      const blob = await res.blob();
-      
-      const fileRef = storageRef(storage, nome);
-      await uploadBytes(fileRef, blob, { contentType: 'image/png' });
-      return await getDownloadURL(fileRef);
-    } catch (err) { 
-      console.error('Erro no upload para o Storage:', err); 
-      return null; 
-    }
-  }
-
-  function setBtnLoading(isLoading) {
-    const btn = document.getElementById('btnSalvarAssinatura');
-    if (isLoading) {
-      btn.dataset.originalText = btn.textContent;
-      btn.innerHTML = `⏳ Salvando...`;
-      btn.disabled = true;
-    } else {
-      btn.innerHTML = btn.dataset.originalText || "Salvar assinatura";
-      btn.disabled = false;
-    }
-  }
-
-  /* Salvar assinatura usando Firebase Firestore e Storage */
-  async function salvarAssinatura(){
-    if (!registroAtual) { alert('Registro inválido ou não carregado.'); return; }
-
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let pixelsMarcados = 0;
-    try {
-      const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-      for (let i = 0; i < data.length; i += 4){
-        if (data[i+3] > 10) pixelsMarcados++;
-      }
-    } catch (e) { }
-
-    if (pixelsMarcados < PIXELS_MIN){
-      alert('Assinatura inválida: por favor assine de forma legível no quadro pontilhado.');
-      setStatus('Assinatura incompleta');
-      return;
-    }
-
-    const base64 = canvas.toDataURL('image/png');
-
-    try {
-      setStatus('Enviando assinatura...');
-      setBtnLoading(true);
-
-      const urlAss = await uploadBase64ToFirebaseStorage(base64);
-      if (!urlAss){ 
-        alert('Falha ao enviar assinatura para o Firebase Storage.'); 
-        setStatus('Erro no upload'); 
-        setBtnLoading(false); 
-        return; 
-      }
-
-      const agoraIso = new Date().toISOString();
-      const docRef = doc(db, 'registros', registroAtual.id);
-      
-      await updateDoc(docRef, { 
-        assinatura_url: urlAss, 
-        status: 'Entregue', 
-        baixa_em: agoraIso 
-      });
-
-      registroAtual.assinatura_url = urlAss;
-      registroAtual.status = 'Entregue';
-      registroAtual.baixa_em = agoraIso;
-
-      preencherDadosTela(registroAtual);
-      decidirSePermiteAssinar(registroAtual);
-
-      alert('✅ Confirmação de recebimento salva com sucesso no Firebase!');
-      setStatus('Assinatura salva');
-    } catch (e) {
-      console.error(e);
-      alert('Erro inesperado ao salvar a assinatura no Firestore.');
-      setStatus('Erro de conexão');
-    } finally {
-      setBtnLoading(false);
-    }
-  }
-
-  window.addEventListener('load', () => {
-    setTimeout(() => carregarRegistro(), 80);
+function renderizarFotosEdicao(){
+  const div = document.getElementById("fotosAtuaisEdicao");
+  div.innerHTML = "";
+  fotosExistentesEdicao.forEach((url, i) => {
+    div.innerHTML += `<div class="foto-edicao"><img src="${url}"><button onclick="removerFotoEdicao(${i})">✖</button></div>`;
   });
+}
+
+function removerFotoEdicao(i){
+  fotosParaRemover.push(extrairNomeArquivoDeUrl(fotosExistentesEdicao[i]));
+  fotosExistentesEdicao.splice(i, 1);
+  renderizarFotosEdicao();
+}
+
+async function abrirCameraEdicao(){
+  try {
+    streamEdicao = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}}});
+    const v = document.getElementById("videoEdicao");
+    v.srcObject = streamEdicao; v.style.display="block"; document.getElementById("btnCapturarEdicao").style.display="block";
+    v.scrollIntoView({behavior:'smooth'});
+  }catch(e){ alert("Erro câmera."); }
+}
+
+function capturarFotoEdicao(){
+  const canvas = document.getElementById("canvasEdicao"), v = document.getElementById("videoEdicao");
+  canvas.getContext("2d").drawImage(v,0,0,canvas.width,canvas.height);
+  const b64 = canvas.toDataURL("image/png");
+  fotosNovasEdicao.push(b64);
+  
+  const div = document.getElementById("previewEdicao");
+  const cont = document.createElement("div"); cont.className="foto-edicao";
+  cont.innerHTML = `<img src="${b64}"><button>✖</button>`;
+  cont.querySelector("button").onclick = () => { fotosNovasEdicao.splice(fotosNovasEdicao.indexOf(b64),1); cont.remove(); };
+  div.appendChild(cont);
+}
+
+function fecharModalEdicao(){
+  document.getElementById("modalEditarRegistro").style.display = "none";
+  if(streamEdicao){ streamEdicao.getTracks().forEach(t=>t.stop()); streamEdicao=null; }
+  document.getElementById("videoEdicao").srcObject = null;
+  document.getElementById("videoEdicao").style.display = "none";
+  document.getElementById("btnCapturarEdicao").style.display = "none";
+  document.getElementById("previewEdicao").innerHTML = "";
+}
+
+async function salvarEdicaoRegistro(btnRef){
+  setBtnLoading(btnRef, true, "💾 Salvar");
+  try{
+    let fotosAtual = [...fotosExistentesEdicao];
+    for (let i=0; i<fotosNovasEdicao.length && fotosAtual.length < 3; i++){
+      fotosAtual.push(await uploadBase64ToStorage(fotosNovasEdicao[i], BUCKET_FOTOS));
+    }
+    const up = { foto_url: fotosAtual[0]||null, foto_url_2: fotosAtual[1]||null, foto_url_3: fotosAtual[2]||null };
+    await db.from("registros").update(up).eq("id", registroEmEdicao.supabase_id);
+    
+    // Limpar storage antigo
+    if(fotosParaRemover.length) await db.storage.from(BUCKET_FOTOS).remove(fotosParaRemover);
+    Object.assign(registroEmEdicao, up);
+    atualizarTabelaRegistrosUI();
+    fecharModalEdicao();
+  }catch(e){ alert("Erro ao editar."); } finally { setBtnLoading(btnRef, false); }
+}
+
+/* ========== Realtime (Reconexão Segura) ========== */
+function conectarRealtime() {
+  try {
+    const channelA = db.channel('public:contatos').on('postgres_changes', { event: '*', schema: 'public', table: 'contatos' }, handleRealtimeContato).subscribe();
+    const channelB = db.channel('public:registros').on('postgres_changes', { event: '*', schema: 'public', table: 'registros' }, handleRealtimeRegistro).subscribe();
+  } catch (e) { console.warn(e); }
+}
+function handleRealtimeContato(p) { carregarContatos(); /* Simplificado para garantir sincronia correta */ }
+function handleRealtimeRegistro(p) { carregarRegistrosRemotos(); /* Simplificado para garantir sincronia correta */ }
+
+/* Fechar menus/modais globais */
+document.addEventListener('click', e => { if(!e.target.closest('.menu-baixa-container')) document.querySelectorAll('.menu-baixa-opcoes').forEach(m=>m.style.display='none'); });
+document.addEventListener('click', e => {
+  if (e.target.matches('img.preview')) {
+    const o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:22000;cursor:pointer;';
+    o.innerHTML = `<img src="${e.target.src}" style="max-width:95%;max-height:95%;border-radius:8px">`;
+    o.onclick = () => o.remove();
+    document.body.appendChild(o);
+  }
+});
 </script>
 </body>
 </html>
