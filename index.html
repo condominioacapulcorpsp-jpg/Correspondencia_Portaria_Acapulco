@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Confirmação de Entrega — Portaria Acapulco</title>
+<title>Painel da Portaria — Portaria Acapulco</title>
 
 <style>
 :root{
@@ -17,7 +17,6 @@
   --sombra: 0 8px 30px rgba(15,23,42,0.12);
   --radius:12px;
   --max-width:760px;
-  --assinatura-min-pixels:120;
 }
 
 body{
@@ -59,185 +58,171 @@ body.tema-escuro{
   background:linear-gradient(180deg,var(--azul),#16345f);
   color:#fff;
 }
-.brand{
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
 .brand h1{font-size:18px;margin:0}
 .header .meta{font-size:13px;color:rgba(255,255,255,0.85)}
 
 .content{
   padding:18px;
-  display:grid;
-  grid-template-columns: 1fr;
+  display:flex;
+  flex-direction:column;
   gap:14px;
 }
 
-.info-grid{
+.form-group{
   display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  align-items:center;
+  flex-direction:column;
+  gap:6px;
 }
-.info-block{
-  flex:1;
-  min-width:180px;
+.form-group label{
+  font-size:13px;
+  font-weight:600;
+  color:var(--muted);
+}
+.form-control{
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.15);
+  font-size:15px;
+  background:inherit;
+  color:inherit;
+}
+body.tema-escuro .form-control{
+  border:1px solid rgba(255,255,255,0.15);
+}
+
+.camera-box{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
+  background:rgba(0,0,0,0.02);
   padding:12px;
   border-radius:10px;
-  background:rgba(0,0,0,0.02);
   border:1px solid rgba(0,0,0,0.04);
 }
-body.tema-escuro .info-block {
-  background:rgba(255,255,255,0.03);
-  border:1px solid rgba(255,255,255,0.06);
-}
-.info-label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block}
-.info-value{font-weight:600;font-size:15px}
-
-.fotos-grid{display:flex;gap:8px;flex-wrap:wrap}
-.fotos-grid img{width:96px;height:96px;border-radius:8px;object-fit:cover;border:1px solid #e6e6e6;background:#fff}
-
-.assinatura-card{
-  padding:14px;border-radius:10px;background:rgba(0,0,0,0.01);border:1px solid rgba(0,0,0,0.04);
-  display:flex;flex-direction:column;gap:12px;
-}
-body.tema-escuro .assinatura-card {
+body.tema-escuro .camera-box{
   background:rgba(255,255,255,0.02);
   border:1px solid rgba(255,255,255,0.06);
 }
-.assinatura-title{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-}
-.hint{font-size:13px;color:var(--muted)}
 
-#assinaturaCanvas{
-  width:100%;
-  height:260px;
-  border:2px dashed rgba(20,30,50,0.2);
+video, canvas {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  background: #000;
+  display: none;
+}
+
+.fotos-preview{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+.fotos-preview img{
+  width:80px;
+  height:80px;
+  border-radius:8px;
+  object-fit:cover;
+  border:1px solid #ddd;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+.btn{
+  flex:1;
+  padding:12px;
   border-radius:10px;
-  background:#ffffff;
-  touch-action:none;
-  display:block;
-  cursor:crosshair;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  font-size:15px;
+  transition:opacity 0.2s;
 }
-body.tema-escuro #assinaturaCanvas {
-  background:#f8fafc;
-}
-
-.preview-assinatura{max-width:320px;margin:0 auto;border-radius:8px;border:1px solid #ddd;background:#fff;padding:8px;display:block;object-fit:contain}
-
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{flex:1;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600;transition:opacity 0.2s}
 .btn.primary{background:var(--azul);color:#fff}
-.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.08);color:inherit}
-.btn.warn{background:var(--danger);color:#fff}
-.btn[disabled]{opacity:0.55;cursor:not-allowed}
+.btn.success{background:var(--verde);color:#fff}
+.btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.1);color:inherit}
+.btn[disabled]{opacity:0.5;cursor:not-allowed}
 
-.status-pill{display:inline-block;padding:8px 12px;border-radius:999px;font-weight:700;color:#fff}
-.status-pendente{background:#f59e0b}
-.status-entregue{background:var(--success)}
-
-.bloqueio{padding:12px;border-radius:10px;background:#fff5f5;border:1px solid #f5c6c6;color:#822;}
-
-.footer{padding:12px 18px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.footer small{color:var(--muted);}
-
-@media(max-width:720px){
-  #assinaturaCanvas{height:220px}
-  .fotos-grid img{width:76px;height:76px}
-  .info-grid{flex-direction:column}
+.footer{
+  padding:12px 18px;
+  background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);
+  display:flex;
+  align-items:center;
+  justify-content:between;
 }
+.footer small{color:var(--muted)}
 </style>
 </head>
 <body>
 
 <div class="page">
-  <div class="container" role="main" aria-labelledby="titulo">
-    <header class="header" role="banner">
-      <div class="brand" aria-hidden="true">
-        <div>
-          <h1 id="titulo">Confirmação de Entrega</h1>
-          <div class="meta">Portaria Acapulco — Assinatura segura</div>
-        </div>
+  <div class="container">
+    <header class="header">
+      <div>
+        <h1>Nova Encomenda</h1>
+        <div class="meta">Portaria Acapulco — Registro de Chegada</div>
       </div>
       <div style="margin-left:auto">
-        <button id="toggleTemaBtn" class="btn ghost" aria-pressed="false" title="Alternar tema">🌗 Tema</button>
+        <button id="toggleTemaBtn" class="btn ghost" title="Alternar tema">🌗 Tema</button>
       </div>
     </header>
 
-    <main class="content" role="main">
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="info-grid">
-          <div class="info-block">
-            <span class="info-label">Morador</span>
-            <div id="nomeMorador" class="info-value">—</div>
-          </div>
-          <div class="info-block">
-            <span class="info-label">Entrega</span>
-            <div id="tipoEntrega" class="info-value">—</div>
-          </div>
-          <div class="info-block">
-            <span class="info-label">Recebida em</span>
-            <div id="dataRecebida" class="info-value">—</div>
-          </div>
+    <main class="content">
+      <div class="form-group">
+        <label for="selectMorador">Morador / Apartamento</label>
+        <select id="selectMorador" class="form-control">
+          <option value="">Selecione o morador...</option>
+          <option value="Carlos - 00000">Carlos - 00000</option>
+          <!-- Adicione mais moradores conforme necessário -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="selectEntrega">Tipo de Encomenda</label>
+        <select id="selectEntrega" class="form-control">
+          <option value="Shopee">Shopee</option>
+          <option value="Mercado Livre">Mercado Livre</option>
+          <option value="Correios">Correios</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+
+      <div class="camera-box">
+        <label style="font-weight:600;font-size:13px">Capturar Foto da Encomenda (Máx. 3)</label>
+        <div>
+          <button id="btnAbrirCamera" class="btn ghost" type="button">📸 Abrir Câmera</button>
+          <button id="btnCapturar" class="btn primary" type="button" style="display:none">🔘 Capturar</button>
+          <button id="btnFecharCamera" class="btn ghost" type="button" style="display:none">✖ Fechar</button>
         </div>
 
-        <div class="info-grid">
-          <div class="info-block" style="flex:1.4">
-            <span class="info-label">Fotos da encomenda</span>
-            <div id="fotosContainer" class="fotos-grid hint">Carregando...</div>
-          </div>
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
 
-          <div class="info-block" style="max-width:400px;min-width:350px">
-            <span class="info-label">Status</span>
-            <div style="margin-top:6px" id="statusEntregaWrap">
-              <span id="statusEntrega" class="status-pill status-pendente">Pendente</span>
-            </div>
-            <div style="margin-top:10px">
-              <span class="info-label">Assinatura já registrada</span>
-              <img id="assinaturaExistente" class="preview-assinatura" style="display:none" alt="Assinatura existente" />
-            </div>
-          </div>
+        <div class="form-group" style="width:100%">
+          <span style="font-size:12px;color:var(--muted)">Pré-visualização das fotos:</span>
+          <div id="fotosContainer" class="fotos-preview">Nenhuma foto tirada.</div>
         </div>
       </div>
 
-      <section class="assinatura-card" aria-labelledby="assinaturaTitle">
-        <div class="assinatura-title">
-          <div>
-            <h2 id="assinaturaTitle" style="margin:0;font-size:16px">Assine para confirmar</h2>
-            <div class="hint">Assine abaixo com o dedo ou mouse. Só é possível assinar uma vez.</div>
-          </div>
-          <div id="pixelInfo" class="hint" aria-live="polite">—</div>
-        </div>
-
-        <canvas id="assinaturaCanvas" role="img" aria-label="Área de assinatura"></canvas>
-
-        <div class="actions" style="display:flex;align-items:center">
-          <button id="btnLimparAssinatura" class="btn ghost" type="button">Limpar</button>
-          <button id="btnSalvarAssinatura" class="btn primary" type="button" disabled>Salvar assinatura</button>
-          <button id="btnFechar" class="btn ghost" type="button">Fechar</button>
-        </div>
-
-        <div id="mensagemBloqueio" style="display:none" class="bloqueio">
-          Esta entrega já foi confirmada anteriormente. Em caso de dúvida, contate a portaria.
-        </div>
-
-      </section>
-
+      <button id="btnSalvarRegistro" class="btn success" disabled>💾 Salvar e Gerar Link de Assinatura</button>
     </main>
 
-    <footer class="footer" role="contentinfo">
-      <small>Portaria Acapulco • Sistema de confirmação</small>
-      <div id="statusBar"><span id="statusText">Carregando...</span></div>
+    <footer class="footer">
+      <small>Portaria Acapulco • Sistema Interno</small>
+      <div id="statusText">Pronto</div>
     </footer>
   </div>
 </div>
 
-<!-- Firebase SDKs (Modular Version - Apenas Firestore) -->
+<!-- Firebase SDKs (Apenas Firestore) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "SUA_API_KEY",
@@ -251,277 +236,128 @@ body.tema-escuro #assinaturaCanvas {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  let registroAtual = null;
-  const PIXELS_MIN = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--assinatura-min-pixels')) || 120;
+  let fotosArray = [];
+  let streamCamera = null;
 
-  function setStatus(msg){ const s = document.getElementById('statusText'); if (s) s.textContent = msg; }
-
-  /* TEMA persistente */
-  (function(){
-    const btn = document.getElementById('toggleTemaBtn');
-    const saved = localStorage.getItem('acapulco_tema_v2');
-    if (saved === 'escuro') document.body.classList.add('tema-escuro');
-    btn.addEventListener('click', ()=>{
-      const ativo = document.body.classList.toggle('tema-escuro');
-      localStorage.setItem('acapulco_tema_v2', ativo ? 'escuro' : 'claro');
-      btn.setAttribute('aria-pressed', String(ativo));
-    });
-  })();
-
-  function obterIdRegistroDaUrl(){
-    return new URLSearchParams(window.location.search).get('registro');
+  function setStatus(msg) {
+    document.getElementById('statusText').textContent = msg;
   }
 
-  /* Carregar registro do Firestore */
-  async function carregarRegistro(){
-    const id = obterIdRegistroDaUrl();
-    if (!id){ setStatus('Registro não informado'); alert('Registro inválido: parâmetro "registro" ausente na URL.'); return; }
+  /* TEMA */
+  const btnTema = document.getElementById('toggleTemaBtn');
+  if (localStorage.getItem('acapulco_tema_v2') === 'escuro') document.body.classList.add('tema-escuro');
+  btnTema.onclick = () => {
+    const escuro = document.body.classList.toggle('tema-escuro');
+    localStorage.setItem('acapulco_tema_v2', escuro ? 'escuro' : 'claro');
+  };
 
+  /* CONTROLE DA CÂMERA */
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const btnAbrir = document.getElementById('btnAbrirCamera');
+  const btnCapturar = document.getElementById('btnCapturar');
+  const btnFechar = document.getElementById('btnFecharCamera');
+
+  btnAbrir.onclick = async () => {
     try {
-      setStatus('Carregando entrega...');
-      const docRef = doc(db, 'registros', id);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()){
-        setStatus('Registro não encontrado');
-        alert('Não foi possível localizar a entrega no sistema.');
-        return;
-      }
-      
-      registroAtual = { id: docSnap.id, ...docSnap.data() };
-      preencherDadosTela(registroAtual);
-      decidirSePermiteAssinar(registroAtual);
-      setStatus('Pronto');
-    } catch (e) {
-      console.error(e);
-      setStatus('Erro ao carregar');
-      alert('Erro ao carregar a entrega. Verifique sua conexão.');
+      streamCamera = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = streamCamera;
+      video.style.display = 'block';
+      btnAbrir.style.display = 'none';
+      btnCapturar.style.display = 'inline-block';
+      btnFechar.style.display = 'inline-block';
+    } catch (err) {
+      alert('Erro ao acessar a câmera. Verifique as permissões do navegador.');
     }
-  }
+  };
 
-  function preencherDadosTela(reg){
-    document.getElementById('nomeMorador').textContent = reg.nome || '-';
-    document.getElementById('tipoEntrega').textContent = reg.entrega || '-';
-    document.getElementById('dataRecebida').textContent = reg.data ? (reg.data.toDate ? reg.data.toDate().toLocaleString() : new Date(reg.data).toLocaleString()) : '-';
-
-    const statusWrap = document.getElementById('statusEntrega');
-    if ((reg.status && reg.status.toLowerCase() === 'entregue') || reg.assinatura_url){
-      statusWrap.textContent = 'Entregue';
-      statusWrap.className = 'status-pill status-entregue';
-    } else {
-      statusWrap.textContent = 'Pendente';
-      statusWrap.className = 'status-pill status-pendente';
+  btnFechar.onclick = () => {
+    if (streamCamera) {
+      streamCamera.getTracks().forEach(t => t.stop());
     }
+    video.style.display = 'none';
+    btnCapturar.style.display = 'none';
+    btnFechar.style.display = 'none';
+    btnAbrir.style.display = 'inline-block';
+  };
 
-    const fotosContainer = document.getElementById('fotosContainer');
-    fotosContainer.innerHTML = '';
-    const urls = [reg.foto_url, reg.foto_url_2, reg.foto_url_3].filter(Boolean);
-    if (urls.length){
-      urls.forEach(u=>{
-        const img = document.createElement('img');
-        img.src = u;
-        img.alt = 'Foto da encomenda';
-        img.onclick = () => window.open(u, '_blank');
-        img.style.cursor = 'pointer';
-        fotosContainer.appendChild(img);
-      });
-    } else {
-      fotosContainer.textContent = 'Nenhuma foto registrada.';
+  btnCapturar.onclick = () => {
+    if (fotosArray.length >= 3) {
+      alert('Máximo de 3 fotos atingido.');
+      return;
     }
-
-    const assImg = document.getElementById('assinaturaExistente');
-    if (reg.assinatura_url){
-      assImg.src = reg.assinatura_url;
-      assImg.style.display = 'block';
-    } else {
-      assImg.style.display = 'none';
-    }
-  }
-
-  function decidirSePermiteAssinar(reg){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const bloqueio = document.getElementById('mensagemBloqueio');
-    const jaTemAss = !!reg.assinatura_url || (reg.status && reg.status.toLowerCase() === 'entregue');
-
-    if (jaTemAss){
-      canvas.style.display = 'none';
-      bloqueio.style.display = 'block';
-      document.getElementById('btnSalvarAssinatura').style.display = 'none';
-      document.getElementById('btnLimparAssinatura').style.display = 'none';
-      document.getElementById('pixelInfo').style.display = 'none';
-    } else {
-      canvas.style.display = 'block';
-      bloqueio.style.display = 'none';
-      prepararCanvasAssinatura();
-    }
-  }
-
-  function prepararCanvasAssinatura(){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const ratio = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.round(rect.width * ratio);
-    canvas.height = Math.round(rect.height * ratio);
-    canvas.style.width = `${rect.width}px`;
-    canvas.style.height = `${rect.height}px`;
-    ctx.scale(ratio, ratio);
-
-    ctx.lineWidth = 2.5;
-    ctx.lineJoin = ctx.lineCap = 'round';
-    ctx.strokeStyle = '#111';
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    let drawing = false;
-    let last = {x:0, y:0};
-
-    function posFromEvent(e){
-      const r = canvas.getBoundingClientRect();
-      let cx = e.clientX, cy = e.clientY;
-      if (e.touches && e.touches.length > 0){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
-      return { x: cx - r.left, y: cy - r.top };
-    }
-
-    function start(e){
-      drawing = true;
-      last = posFromEvent(e);
-      if(e.cancelable) e.preventDefault();
-    }
-    function move(e){
-      if (!drawing) return;
-      const p = posFromEvent(e);
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      last = p;
-      if(e.cancelable) e.preventDefault();
-    }
-    function end(e){
-      drawing = false;
-      atualizarContagemDePixels();
-    }
-
-    canvas.addEventListener('touchstart', start, {passive:false});
-    canvas.addEventListener('touchmove', move, {passive:false});
-    canvas.addEventListener('touchend', end, {passive:false});
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    canvas.addEventListener('mousedown', start, {passive:false});
-    canvas.addEventListener('mousemove', move, {passive:false});
-    canvas.addEventListener('mouseup', end, {passive:false});
-    canvas.addEventListener('mouseleave', end, {passive:false});
+    const base64Img = canvas.toDataURL('image/jpeg', 0.7);
+    fotosArray.push(base64Img);
+    atualizarPreviaFotos();
+  };
 
-    document.getElementById('btnLimparAssinatura').onclick = function(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      atualizarContagemDePixels();
-    };
+  function atualizarPreviaFotos() {
+    const container = document.getElementById('fotosContainer');
+    container.innerHTML = '';
+    fotosArray.forEach((imgBase64) => {
+      const img = document.createElement('img');
+      img.src = imgBase64;
+      container.appendChild(img);
+    });
 
-    document.getElementById('btnSalvarAssinatura').onclick = salvarAssinatura;
-    document.getElementById('btnFechar').onclick = function(){
-      try { window.close(); } catch(e){ }
-    };
-
-    atualizarContagemDePixels();
-  }
-
-  function atualizarContagemDePixels(){
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-    let pixelsMarcados = 0;
-    try {
-      const w = canvas.width, h = canvas.height;
-      const data = ctx.getImageData(0,0,w,h).data;
-      for (let i = 0; i < data.length; i += 4){
-        if (data[i+3] > 10) pixelsMarcados++;
-      }
-    } catch (e) {
-      console.warn('Impossível ler pixels:', e);
-    }
-
-    const infoEl = document.getElementById('pixelInfo');
-    const saveBtn = document.getElementById('btnSalvarAssinatura');
-
-    if (pixelsMarcados >= PIXELS_MIN){
-      infoEl.textContent = `Assinatura válida.`;
-      infoEl.style.color = "var(--success)";
-      saveBtn.disabled = false;
-    } else {
-      infoEl.textContent = `Assinatura insuficiente — desenhe mais`;
-      infoEl.style.color = "var(--muted)";
-      saveBtn.disabled = true;
+    const btnSalvar = document.getElementById('btnSalvarRegistro');
+    if (fotosArray.length > 0) {
+      btnSalvar.disabled = false;
     }
   }
 
-  function setBtnLoading(isLoading) {
-    const btn = document.getElementById('btnSalvarAssinatura');
-    if (isLoading) {
-      btn.dataset.originalText = btn.textContent;
-      btn.innerHTML = `⏳ Salvando...`;
-      btn.disabled = true;
-    } else {
-      btn.innerHTML = btn.dataset.originalText || "Salvar assinatura";
-      btn.disabled = false;
-    }
-  }
+  /* SALVAR NO FIRESTORE */
+  document.getElementById('btnSalvarRegistro').onclick = async () => {
+    const morador = document.getElementById('selectMorador').value;
+    const entrega = document.getElementById('selectEntrega').value;
 
-  async function salvarAssinatura(){
-    if (!registroAtual) { alert('Registro inválido ou não carregado.'); return; }
-
-    const canvas = document.getElementById('assinaturaCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let pixelsMarcados = 0;
-    try {
-      const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
-      for (let i = 0; i < data.length; i += 4){
-        if (data[i+3] > 10) pixelsMarcados++;
-      }
-    } catch (e) { }
-
-    if (pixelsMarcados < PIXELS_MIN){
-      alert('Assinatura inválida: por favor assine de forma legível no quadro pontilhado.');
-      setStatus('Assinatura incompleta');
+    if (!morador) {
+      alert('Selecione o morador.');
       return;
     }
 
-    const base64 = canvas.toDataURL('image/png');
-
     try {
-      setStatus('Salvando no banco...');
-      setBtnLoading(true);
+      setStatus('Salvando registro...');
+      document.getElementById('btnSalvarRegistro').disabled = true;
 
-      const agoraIso = new Date().toISOString();
-      const docRef = doc(db, 'registros', registroAtual.id);
+      // Cria objeto com até 3 fotos convertidas direto em Base64 (evita erro de Storage/CORS)
+      const dadosRegistro = {
+        nome: morador,
+        entrega: entrega,
+        data: serverTimestamp(),
+        status: 'Pendente',
+        foto_url: fotosArray[0] || null,
+        foto_url_2: fotosArray[1] || null,
+        foto_url_3: fotosArray[2] || null,
+        assinatura_url: null
+      };
+
+      const docRef = await addDoc(collection(db, 'registros'), dadosRegistro);
       
-      // Salva direto no Firestore, eliminando o Storage e erros de CORS
-      await updateDoc(docRef, { 
-        assinatura_url: base64, 
-        status: 'Entregue', 
-        baixa_em: agoraIso 
-      });
+      setStatus('Salvo com sucesso!');
+      alert('✅ Encomenda registrada com sucesso!');
 
-      registroAtual.assinatura_url = base64;
-      registroAtual.status = 'Entregue';
-      registroAtual.baixa_em = agoraIso;
+      // Gera o link para a página de assinatura passando o ID gerado na URL
+      const urlAssinatura = `assinatura.html?registro=${docRef.id}`;
+      
+      if (confirm('Deseja abrir agora a tela para o morador assinar?')) {
+        window.location.href = urlAssinatura;
+      } else {
+        location.reload();
+      }
 
-      preencherDadosTela(registroAtual);
-      decidirSePermiteAssinar(registroAtual);
-
-      alert('✅ Confirmação de recebimento salva com sucesso!');
-      setStatus('Assinatura salva');
     } catch (e) {
       console.error(e);
-      alert('Erro inesperado ao salvar a assinatura no Firestore.');
-      setStatus('Erro de conexão');
-    } finally {
-      setBtnLoading(false);
+      alert('Erro ao salvar no Firestore. Verifique o console.');
+      setStatus('Erro');
+      document.getElementById('btnSalvarRegistro').disabled = false;
     }
-  }
-
-  window.addEventListener('load', () => {
-    setTimeout(() => carregarRegistro(), 80);
-  });
+  };
 </script>
 </body>
 </html>
