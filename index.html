@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Correspondência - Portaria Acapulco (Atualizado)</title>
+<title>Correspondência - Portaria Acapulco (Firebase)</title>
 <style>
 :root{
   --azul:#1f2b48;
@@ -96,7 +96,6 @@ button.small{padding:6px 8px;font-size:13px;cursor:pointer}
 .preview-grid{display:flex;flex-wrap:wrap;gap:8px}
 img.preview{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
 img.preview.assinatura{width:140px;height:120px;object-fit:contain;padding:6px}
-/* vídeo dentro do app */
 video{width:100%;max-width:360px;border-radius:8px;background:#000}
 
 /* table responsive */
@@ -119,7 +118,7 @@ th{background:var(--azul);color:var(--branco)}
 #assinaturaCanvas.signature-canvas{flex:1;border:2px dashed var(--azul);border-radius:8px;margin:8px 0;background:linear-gradient(180deg,#fff,#f7f9fb);cursor:crosshair}
 #modalAssinatura .botoes-assinatura{display:flex;gap:8px}
 
-/* edição modal: agora com body rolável e footer fixo */
+/* edição modal */
 #modalEditarRegistro{display:none;position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));align-items:center;justify-content:center;z-index:9999}
 #modalEditarRegistro .conteudo-edicao{
   width:94%;
@@ -132,7 +131,6 @@ th{background:var(--azul);color:var(--branco)}
   flex-direction:column;
   overflow:hidden;
 }
-/* área principal rolável no modal */
 #modalEditarRegistro .edicao-body{
   flex:1;
   overflow:auto;
@@ -141,7 +139,6 @@ th{background:var(--azul);color:var(--branco)}
   flex-direction:column;
   gap:12px;
 }
-
 #modalEditarRegistro video{
   width:100%;
   max-height:40vh;
@@ -149,11 +146,7 @@ th{background:var(--azul);color:var(--branco)}
   object-fit:cover;
   background:#000;
 }
-
-/* previews */
 #modalEditarRegistro .previews{display:flex;flex-wrap:wrap;gap:10px}
-
-/* footer com botões sempre visível */
 #modalEditarRegistro .edicao-actions{
   display:flex;
   gap:8px;
@@ -171,12 +164,7 @@ th{background:var(--azul);color:var(--branco)}
 .foto-edicao img{width:100%;height:100%;object-fit:cover}
 .foto-edicao button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer}
 
-/* small helpers */
 .kv{font-size:12px;color:#666}
-
-/* highlight temporário */
-.tr-highlight{animation: highlightFlash 2s ease-in-out;}
-@keyframes highlightFlash{0%{background:rgba(255,230,150,0.9)}50%{background:transparent}100%{background:transparent}}
 
 @media(max-width:800px){
   header{flex-direction:column;align-items:flex-start;gap:8px}
@@ -184,7 +172,11 @@ th{background:var(--azul);color:var(--branco)}
   #modalEditarRegistro .conteudo-edicao{height:92%}
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Firebase SDK (Compat v9) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 
@@ -205,7 +197,7 @@ th{background:var(--azul);color:var(--branco)}
            style="width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 6px rgba(0,0,0,0.12);"/>
       <div>
         <h1>Correspondência - Portaria Acapulco</h1>
-        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Realtime • Protegido</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Realtime • Protegido (Firebase)</div>
       </div>
     </div>
 
@@ -261,7 +253,7 @@ th{background:var(--azul);color:var(--branco)}
 
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
           <button id="btnSalvarRegistro" class="primary" onclick="registrarCorrespondencia(this)">💾 Salvar Registro</button>
-          <div class="kv">Tudo salvo diretamente na nuvem (Supabase)</div>
+          <div class="kv">Tudo salvo diretamente na nuvem (Firebase)</div>
         </div>
       </section>
 
@@ -374,13 +366,23 @@ window.addEventListener('error', function(ev){
   console.error('Erro global capturado:', ev.error || ev.message || ev);
 });
 
-/* ========== Supabase config ========== */
-const SUPABASE_URL = "https://vdxiphzxdpwggydezbzw.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeGlwaHp4ZHB3Z2d5ZGV6Ynp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDQxMTQsImV4cCI6MjA3ODQ4MDExNH0.IQLGlZlcgEw8-E_TbnfZwrzs8eJt0Ky4WtYrmyCr1aI";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ========== Firebase config ========== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBvtD_cmTu7_No5x1kK_J-QgC2GzyHrvtU",
+  authDomain: "portariacondominio-e4fc0.firebaseapp.com",
+  databaseURL: "https://portariacondominio-e4fc0-default-rtdb.firebaseio.com",
+  projectId: "portariacondominio-e4fc0",
+  storageBucket: "portariacondominio-e4fc0.firebasestorage.app",
+  messagingSenderId: "988888796819",
+  appId: "1:988888796819:web:b2abdec173319e6c574766",
+  measurementId: "G-33B5M0B6K0"
+};
 
-const BUCKET_FOTOS = "fotos";
-const BUCKET_ASSINATURAS = "assinaturas";
+// Inicializa o Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
 const DELETE_PASSWORD = "12345";
 
 /* ========== State ========== */
@@ -416,7 +418,6 @@ function alternarTema(){
   if (btn) btn.textContent = theme === 'escuro' ? '☀️ Claro' : '🌗 Tema';
 }
 
-/* Helper de Loading de Botão */
 function setBtnLoading(btn, isLoading, originalText = "") {
   if (!btn) return;
   if (isLoading) {
@@ -458,9 +459,7 @@ document.addEventListener('DOMContentLoaded', function(){
       if (e.key === 'Enter') { e.preventDefault(); fazerLogin(); }
     });
   });
-  try { conectarRealtime(); } catch(e){}
   
-  // Load Theme
   const saved = localStorage.getItem('acapulco_tema_v2');
   if (saved === 'escuro') {
     document.body.classList.add('tema-escuro');
@@ -468,13 +467,16 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
-/* ========== Contatos ========== */
+/* ========== Contatos (Firestore) ========== */
 async function carregarContatos(){
   try {
     setStatus("Carregando contatos...");
-    const { data, error } = await db.from('contatos').select('*').order('id',{ascending:false});
-    if (error) throw error;
-    contatos = (data || []).map(x => ({ supabase_id: x.id, nome: x.nome, telefone: x.telefone, apartamento: x.apartamento }));
+    const snapshot = await db.collection('contatos').orderBy('nome', 'asc').get();
+    contatos = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      contatos.push({ supabase_id: doc.id, nome: data.nome, telefone: data.telefone, apartamento: data.apartamento });
+    });
     renderizarContatosUI();
     setStatus("Contatos carregados");
   } catch (err) { console.warn(err); setStatus("Erro ao carregar contatos"); }
@@ -547,7 +549,6 @@ async function salvarContato(btnRef){
 
   if (!nome) return alert("Informe o nome!");
   
-  // Evitar duplicidade exata
   if (!contatoEmEdicao && contatos.some(c => c.nome.toLowerCase() === nome.toLowerCase() && (c.apartamento||"").toLowerCase() === apartamento.toLowerCase())){
     return alert("Contato com mesmo nome e apartamento já existe.");
   }
@@ -555,14 +556,12 @@ async function salvarContato(btnRef){
   setBtnLoading(btnRef, true, "💾 Salvar Contato");
   try {
     if (contatoEmEdicao){
-      const { data, error } = await db.from('contatos').update({ nome, telefone, apartamento }).eq('id', contatoEmEdicao).select();
-      if (error) throw error;
+      await db.collection('contatos').doc(contatoEmEdicao).update({ nome, telefone, apartamento });
       const c = contatos.find(x => x.supabase_id == contatoEmEdicao);
-      if (c && data[0]) { Object.assign(c, data[0]); }
+      if (c) { c.nome = nome; c.telefone = telefone; c.apartamento = apartamento; }
     } else {
-      const { data, error } = await db.from('contatos').insert([{ nome, telefone, apartamento }]).select().single();
-      if (error) throw error;
-      contatos.unshift({ supabase_id: data.id, nome: data.nome, telefone: data.telefone, apartamento: data.apartamento });
+      const docRef = await db.collection('contatos').add({ nome, telefone, apartamento, criadoEm: firebase.firestore.FieldValue.serverTimestamp() });
+      contatos.unshift({ supabase_id: docRef.id, nome, telefone, apartamento });
     }
 
     document.getElementById("nome").value=""; document.getElementById("telefone").value=""; document.getElementById("apartamento").value="";
@@ -589,7 +588,7 @@ async function excluirContatoProtegido(id){
   if (prompt("Digite a senha:") !== DELETE_PASSWORD) return alert("Senha incorreta.");
   if (!confirm("Confirmar exclusão?")) return;
   try {
-    await db.from('contatos').delete().eq('id', id);
+    await db.collection('contatos').doc(id).delete();
     contatos = contatos.filter(c => c.supabase_id != id);
     renderizarContatosUI();
   } catch(e) { alert("Erro ao excluir."); }
@@ -627,30 +626,30 @@ function capturarFoto(){
 function fecharCamera(){
   const video = document.getElementById("video");
   if (cameraStream) { cameraStream.getTracks().forEach(t=>t.stop()); cameraStream = null; }
-  video.srcObject = null; // Impede que a câmera fique presa em background
+  video.srcObject = null;
   video.style.display = "none"; document.getElementById("capturarBtn").style.display = "none";
 }
 
-/* ========== Upload Storage ========== */
-async function uploadBase64ToStorage(base64, bucket){
-  if (!base64) return null;
+/* ========== Firebase Storage ========== */
+async function uploadBase64ToStorage(base64Data, pasta = "fotos"){
+  if (!base64Data) return null;
   try {
-    const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
-    // Método otimizado (evita travamentos em Uint8Array com arquivos pesados)
-    const res = await fetch(base64);
-    const blob = await res.blob();
-    
-    const { error } = await db.storage.from(bucket).upload(nome, blob, { contentType: 'image/png' });
-    if (error) return null;
-    return db.storage.from(bucket).getPublicUrl(nome).data.publicUrl;
+    const nomeArquivo = `${pasta}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
+    const storageRef = storage.ref().child(nomeArquivo);
+    const snapshot = await storageRef.putString(base64Data, 'data_url');
+    return await snapshot.ref.getDownloadURL();
   } catch (err) { console.error("Upload erro:", err); return null; }
 }
 
-function extrairNomeArquivoDeUrl(url){
-  try { return new URL(url).pathname.split('/').pop(); } catch(e){ return null; }
+async function deletarArquivoStoragePorUrl(url){
+  if (!url) return;
+  try {
+    const storageRef = storage.refFromURL(url);
+    await storageRef.delete();
+  } catch(e) { console.warn("Erro ao deletar arquivo do storage:", e); }
 }
 
-/* ========== Registros ========== */
+/* ========== Registros (Firestore) ========== */
 async function registrarCorrespondencia(btnRef){
   const contatoId = document.getElementById("contatoSelect").value;
   const entrega = document.getElementById("descricao").value;
@@ -663,19 +662,33 @@ async function registrarCorrespondencia(btnRef){
     setStatus("Enviando fotos...");
     const urls = [];
     for (let i=0; i<Math.min(3, fotosTemporarias.length); i++){
-      urls.push(await uploadBase64ToStorage(fotosTemporarias[i], BUCKET_FOTOS));
+      urls.push(await uploadBase64ToStorage(fotosTemporarias[i], "fotos"));
     }
 
     const payload = {
-      contato_id: contatoId, nome: contato.nome, entrega,
-      foto_url: urls[0]||null, foto_url_2: urls[1]||null, foto_url_3: urls[2]||null,
-      data: new Date().toISOString(), status: "Pendente"
+      contato_id: contatoId, 
+      nome: contato.nome, 
+      entrega,
+      foto_url: urls[0]||null, 
+      foto_url_2: urls[1]||null, 
+      foto_url_3: urls[2]||null,
+      data: new Date().toISOString(), 
+      status: "Pendente"
     };
 
-    const { data, error } = await db.from('registros').insert([payload]).select().single();
-    if (error) throw error;
+    const docRef = await db.collection('registros').add(payload);
 
-    registros.unshift({ supabase_id: data.id, contato_supabase_id: data.contato_id, nome: data.nome, entrega: data.entrega, foto_url: data.foto_url, foto_url_2: data.foto_url_2, foto_url_3: data.foto_url_3, data: data.data, status: data.status });
+    registros.unshift({ 
+      supabase_id: docRef.id, 
+      contato_supabase_id: contatoId, 
+      nome: contato.nome, 
+      entrega, 
+      foto_url: urls[0], 
+      foto_url_2: urls[1], 
+      foto_url_3: urls[2], 
+      data: payload.data, 
+      status: "Pendente" 
+    });
     
     fotosTemporarias = [];
     document.getElementById("fotoPreview").innerHTML = "";
@@ -742,11 +755,11 @@ async function excluirRegistroProtegido(id){
   if(!confirm("Confirmar exclusão?")) return;
   const r = registros.find(x=>x.supabase_id == id);
   try{
-    await db.from('registros').delete().eq('id', id);
-    // Limpar fotos do Storage
-    const urls = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
-    if(urls.length) await db.storage.from(BUCKET_FOTOS).remove(urls.map(extrairNomeArquivoDeUrl));
-    if(r.assinatura_url) await db.storage.from(BUCKET_ASSINATURAS).remove([extrairNomeArquivoDeUrl(r.assinatura_url)]);
+    await db.collection('registros').doc(id).delete();
+    if(r.foto_url) await deletarArquivoStoragePorUrl(r.foto_url);
+    if(r.foto_url_2) await deletarArquivoStoragePorUrl(r.foto_url_2);
+    if(r.foto_url_3) await deletarArquivoStoragePorUrl(r.foto_url_3);
+    if(r.assinatura_url) await deletarArquivoStoragePorUrl(r.assinatura_url);
     
     registros = registros.filter(x=>x.supabase_id != id);
     atualizarTabelaRegistrosUI();
@@ -756,15 +769,27 @@ async function excluirRegistroProtegido(id){
 async function carregarRegistrosRemotos(){
   try{
     setStatus("Carregando registros...");
-    const { data } = await db.from('registros').select('*').order('id',{ascending:false}).limit(200);
-    registros = (data||[]).map(r=>({
-      supabase_id: r.id, contato_supabase_id: r.contato_id, nome: r.nome, entrega: r.entrega,
-      foto_url: r.foto_url, foto_url_2: r.foto_url_2, foto_url_3: r.foto_url_3,
-      assinatura_url: r.assinatura_url, data: r.data, baixa_em: r.baixa_em, status: r.status||'Pendente'
-    }));
+    const snapshot = await db.collection('registros').orderBy('data', 'desc').limit(200).get();
+    registros = [];
+    snapshot.forEach(doc => {
+      const r = doc.data();
+      registros.push({
+        supabase_id: doc.id, 
+        contato_supabase_id: r.contato_id, 
+        nome: r.nome, 
+        entrega: r.entrega,
+        foto_url: r.foto_url, 
+        foto_url_2: r.foto_url_2, 
+        foto_url_3: r.foto_url_3,
+        assinatura_url: r.assinatura_url, 
+        data: r.data, 
+        baixa_em: r.baixa_em, 
+        status: r.status||'Pendente'
+      });
+    });
     atualizarTabelaRegistrosUI();
     setStatus("Registros carregados");
-  }catch(e){}
+  }catch(e){ console.error(e); setStatus("Erro ao carregar registros"); }
 }
 
 function filtrarRegistros(){
@@ -817,9 +842,9 @@ async function salvarAssinatura(btnRef){
   setBtnLoading(btnRef, true, "Salvar Assinatura");
   try {
     const b64 = document.getElementById("assinaturaCanvas").toDataURL("image/png");
-    const url = await uploadBase64ToStorage(b64, BUCKET_ASSINATURAS);
+    const url = await uploadBase64ToStorage(b64, "assinaturas");
     const baixa = new Date().toISOString();
-    await db.from('registros').update({ assinatura_url: url, status: 'Entregue', baixa_em: baixa }).eq('id', r.supabase_id);
+    await db.collection('registros').doc(r.supabase_id).update({ assinatura_url: url, status: 'Entregue', baixa_em: baixa });
     
     r.assinatura_url = url; r.status = "Entregue"; r.baixa_em = baixa;
     atualizarTabelaRegistrosUI();
@@ -847,7 +872,7 @@ function renderizarFotosEdicao(){
 }
 
 function removerFotoEdicao(i){
-  fotosParaRemover.push(extrairNomeArquivoDeUrl(fotosExistentesEdicao[i]));
+  fotosParaRemover.push(fotosExistentesEdicao[i]);
   fotosExistentesEdicao.splice(i, 1);
   renderizarFotosEdicao();
 }
@@ -888,28 +913,20 @@ async function salvarEdicaoRegistro(btnRef){
   try{
     let fotosAtual = [...fotosExistentesEdicao];
     for (let i=0; i<fotosNovasEdicao.length && fotosAtual.length < 3; i++){
-      fotosAtual.push(await uploadBase64ToStorage(fotosNovasEdicao[i], BUCKET_FOTOS));
+      fotosAtual.push(await uploadBase64ToStorage(fotosNovasEdicao[i], "fotos"));
     }
     const up = { foto_url: fotosAtual[0]||null, foto_url_2: fotosAtual[1]||null, foto_url_3: fotosAtual[2]||null };
-    await db.from("registros").update(up).eq("id", registroEmEdicao.supabase_id);
+    await db.collection("registros").doc(registroEmEdicao.supabase_id).update(up);
     
-    // Limpar storage antigo
-    if(fotosParaRemover.length) await db.storage.from(BUCKET_FOTOS).remove(fotosParaRemover);
+    for(const urlAntiga of fotosParaRemover){
+      await deletarArquivoStoragePorUrl(urlAntiga);
+    }
+    
     Object.assign(registroEmEdicao, up);
     atualizarTabelaRegistrosUI();
     fecharModalEdicao();
   }catch(e){ alert("Erro ao editar."); } finally { setBtnLoading(btnRef, false); }
 }
-
-/* ========== Realtime (Reconexão Segura) ========== */
-function conectarRealtime() {
-  try {
-    const channelA = db.channel('public:contatos').on('postgres_changes', { event: '*', schema: 'public', table: 'contatos' }, handleRealtimeContato).subscribe();
-    const channelB = db.channel('public:registros').on('postgres_changes', { event: '*', schema: 'public', table: 'registros' }, handleRealtimeRegistro).subscribe();
-  } catch (e) { console.warn(e); }
-}
-function handleRealtimeContato(p) { carregarContatos(); /* Simplificado para garantir sincronia correta */ }
-function handleRealtimeRegistro(p) { carregarRegistrosRemotos(); /* Simplificado para garantir sincronia correta */ }
 
 /* Fechar menus/modais globais */
 document.addEventListener('click', e => { if(!e.target.closest('.menu-baixa-container')) document.querySelectorAll('.menu-baixa-opcoes').forEach(m=>m.style.display='none'); });
