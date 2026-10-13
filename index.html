@@ -135,7 +135,7 @@ th{background:var(--azul);color:var(--branco)}
            style="width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 6px rgba(0,0,0,0.12);"/>
       <div>
         <h1>Correspondência - Portaria Acapulco</h1>
-        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Base Google Drive • Gratuito</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Base Google Sheets • Gratuito</div>
       </div>
     </div>
 
@@ -396,19 +396,39 @@ async function salvarContato(btnRef){
   try {
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'add_contato', nome, telefone, apartamento })
     });
-    document.getElementById("nome").value=""; document.getElementById("telefone").value=""; document.getElementById("apartamento").value="";
-    await carregarContatos();
-    setStatus("Contato salvo");
-  } catch (err) { alert("Erro ao salvar."); } finally { setBtnLoading(btnRef, false); }
+    
+    document.getElementById("nome").value = ""; 
+    document.getElementById("telefone").value = ""; 
+    document.getElementById("apartamento").value = "";
+
+    setTimeout(async () => {
+      await carregarContatos();
+      setStatus("Contato salvo com sucesso!");
+    }, 1500);
+
+  } catch (err) { 
+    alert("Erro ao salvar."); 
+  } finally { 
+    setBtnLoading(btnRef, false); 
+  }
 }
 
 async function excluirContato(id){
   if (prompt("Senha para excluir:") !== DELETE_PASSWORD) return alert("Senha incorreta.");
   try {
-    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_contato', id }) });
-    await carregarContatos();
+    await fetch(GOOGLE_SCRIPT_URL, { 
+      method: 'POST', 
+      mode: 'no-cors',
+      body: JSON.stringify({ action: 'delete_contato', id }) 
+    });
+    setTimeout(async () => {
+      await carregarContatos();
+      setStatus("Contato excluído!");
+    }, 1500);
   } catch(e){ alert("Erro ao excluir"); }
 }
 
@@ -465,14 +485,22 @@ async function registrarCorrespondencia(btnRef){
       foto_url_3: fotosTemporarias[2] || ''
     };
 
-    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    await fetch(GOOGLE_SCRIPT_URL, { 
+      method: 'POST', 
+      mode: 'no-cors',
+      body: JSON.stringify(payload) 
+    });
     
     fotosTemporarias = [];
     document.getElementById("fotoPreview").innerHTML = "";
     document.getElementById("descricao").value = "";
     fecharCamera();
-    await carregarRegistrosRemotos();
-    setStatus("Registro salvo!");
+    
+    setTimeout(async () => {
+      await carregarRegistrosRemotos();
+      setStatus("Registro salvo com sucesso!");
+    }, 2000);
+
   } catch (e) { alert("Erro ao salvar."); } finally { setBtnLoading(btnRef, false); }
 }
 
@@ -510,8 +538,15 @@ function atualizarTabelaRegistrosUI(){
 async function excluirRegistro(id){
   if(prompt("Senha para excluir:") !== DELETE_PASSWORD) return alert("Senha incorreta");
   try{
-    await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete_registro', id }) });
-    await carregarRegistrosRemotos();
+    await fetch(GOOGLE_SCRIPT_URL, { 
+      method: 'POST', 
+      mode: 'no-cors',
+      body: JSON.stringify({ action: 'delete_registro', id }) 
+    });
+    setTimeout(async () => {
+      await carregarRegistrosRemotos();
+      setStatus("Registro excluído!");
+    }, 1500);
   }catch(e){ alert("Erro ao excluir."); }
 }
 
@@ -556,10 +591,14 @@ async function salvarAssinatura(btnRef){
     const b64 = document.getElementById("assinaturaCanvas").toDataURL("image/png");
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({ action: 'update_assinatura', id: registroLocalParaAssinatura, assinatura_url: b64 })
     });
-    await carregarRegistrosRemotos();
-    fecharModalAssinatura();
+    setTimeout(async () => {
+      await carregarRegistrosRemotos();
+      fecharModalAssinatura();
+      setStatus("Assinatura salva!");
+    }, 1500);
   } catch(e){ alert("Erro ao salvar assinatura."); } finally { setBtnLoading(btnRef, false); }
 }
 </script>
