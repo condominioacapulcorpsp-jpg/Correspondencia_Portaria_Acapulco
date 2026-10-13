@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Correspondência - Portaria Acapulco (Supabase)</title>
+<title>Correspondência - Portaria Acapulco (Atualizado)</title>
 <style>
 :root{
   --azul:#1f2b48;
@@ -15,6 +15,7 @@
   --max-width:1100px;
 }
 
+/* dark theme */
 body.tema-escuro{
   --fundo:#0f1720;
   --branco:#0d1115;
@@ -23,6 +24,7 @@ body.tema-escuro{
   --texto:#f5f6f7;
 }
 
+/* global layout */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -43,6 +45,7 @@ body{
   align-items:flex-start;
 }
 
+/* centered app container */
 #app{
   width:100%;
   max-width:var(--max-width);
@@ -71,6 +74,7 @@ nav button:hover{background:rgba(255,255,255,0.06)}
 
 .container-inner{display:flex;flex-direction:column;padding:18px;gap:12px}
 
+/* sections */
 .sections{display:flex;flex-direction:column;gap:16px}
 section{display:none;background:transparent;padding:0}
 section.active{display:block}
@@ -78,6 +82,7 @@ section.active{display:block}
 
 h2{margin:0 0 8px 0}
 
+/* inputs/buttons */
 .row{display:flex;gap:8px;align-items:center}
 .row .flex{flex:1}
 input,select,textarea,button{font-size:14px}
@@ -87,35 +92,98 @@ button.primary:disabled{opacity:0.6;cursor:not-allowed}
 button.ghost{background:transparent;border:1px solid var(--cinza);padding:8px 10px;border-radius:8px;cursor:pointer}
 button.small{padding:6px 8px;font-size:13px;cursor:pointer}
 
+/* camera, previews */
 .preview-grid{display:flex;flex-wrap:wrap;gap:8px}
 img.preview{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
 img.preview.assinatura{width:140px;height:120px;object-fit:contain;padding:6px}
+/* vídeo dentro do app */
 video{width:100%;max-width:360px;border-radius:8px;background:#000}
 
+/* table responsive */
 .table-wrap{overflow:auto;border-radius:8px}
 table{width:100%;border-collapse:collapse;background:var(--branco);min-width:820px}
 th,td{padding:8px;border-bottom:1px solid #eee;text-align:center}
 th{background:var(--azul);color:var(--branco)}
 
+/* status bar */
 #statusBar{position:fixed;right:18px;bottom:18px;background:var(--azul);color:var(--branco);padding:10px 12px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.25);z-index:999;transition:all 0.3s}
 
+/* login modal */
 #loginScreen{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6));display:flex;align-items:center;justify-content:center;z-index:2000}
 #loginBox{width:380px;max-width:92%;padding:18px;border-radius:10px;background:var(--branco);box-shadow:0 8px 40px rgba(0,0,0,0.4)}
 #loginBox h2{text-align:center;margin:0 0 8px 0}
 
+/* modal assinatura full */
 #modalAssinatura{display:none;position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.7));align-items:center;justify-content:center;z-index:9999}
 #modalAssinatura .conteudo-assinatura{width:95%;max-width:900px;height:85%;background:var(--branco);border-radius:10px;padding:12px;display:flex;flex-direction:column}
 #assinaturaCanvas.signature-canvas{flex:1;border:2px dashed var(--azul);border-radius:8px;margin:8px 0;background:linear-gradient(180deg,#fff,#f7f9fb);cursor:crosshair}
 #modalAssinatura .botoes-assinatura{display:flex;gap:8px}
 
+/* edição modal: agora com body rolável e footer fixo */
+#modalEditarRegistro{display:none;position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));align-items:center;justify-content:center;z-index:9999}
+#modalEditarRegistro .conteudo-edicao{
+  width:94%;
+  max-width:1000px;
+  height:85%;
+  background:var(--branco);
+  border-radius:10px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+/* área principal rolável no modal */
+#modalEditarRegistro .edicao-body{
+  flex:1;
+  overflow:auto;
+  padding-right:6px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+#modalEditarRegistro video{
+  width:100%;
+  max-height:40vh;
+  border-radius:8px;
+  object-fit:cover;
+  background:#000;
+}
+
+/* previews */
+#modalEditarRegistro .previews{display:flex;flex-wrap:wrap;gap:10px}
+
+/* footer com botões sempre visível */
+#modalEditarRegistro .edicao-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:flex-end;
+  padding-top:8px;
+  border-top:1px solid #eee;
+  flex-shrink:0;
+  background:linear-gradient(transparent, rgba(0,0,0,0.02));
+  margin-top:8px;
+  padding-bottom:6px;
+}
+
+.foto-edicao{width:110px;height:110px;border-radius:8px;overflow:hidden;border:1px solid #ddd;position:relative}
+.foto-edicao img{width:100%;height:100%;object-fit:cover}
+.foto-edicao button{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer}
+
+/* small helpers */
 .kv{font-size:12px;color:#666}
+
+/* highlight temporário */
+.tr-highlight{animation: highlightFlash 2s ease-in-out;}
+@keyframes highlightFlash{0%{background:rgba(255,230,150,0.9)}50%{background:transparent}100%{background:transparent}}
 
 @media(max-width:800px){
   header{flex-direction:column;align-items:flex-start;gap:8px}
   .row{flex-direction:column}
+  #modalEditarRegistro .conteudo-edicao{height:92%}
 }
 </style>
-<!-- SDK do Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -137,7 +205,7 @@ th{background:var(--azul);color:var(--branco)}
            style="width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 6px rgba(0,0,0,0.12);"/>
       <div>
         <h1>Correspondência - Portaria Acapulco</h1>
-        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Base Supabase • Nuvem</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.9)">Realtime • Protegido</div>
       </div>
     </div>
 
@@ -193,7 +261,7 @@ th{background:var(--azul);color:var(--branco)}
 
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
           <button id="btnSalvarRegistro" class="primary" onclick="registrarCorrespondencia(this)">💾 Salvar Registro</button>
-          <div class="kv">Salvo diretamente no Supabase</div>
+          <div class="kv">Tudo salvo diretamente na nuvem (Supabase)</div>
         </div>
       </section>
 
@@ -201,8 +269,9 @@ th{background:var(--azul);color:var(--branco)}
         <h2>Registros de Correspondências</h2>
 
         <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-          <input id="buscarRegistros" placeholder="🔎 Filtrar registros..." class="flex" oninput="filtrarRegistros()" />
+          <input id="buscarRegistros" placeholder="🔎 Filtrar registros (nome, entrega, apartamento, status, data)..." class="flex" oninput="filtrarRegistros()" />
           <button class="small" onclick="carregarRegistrosRemotos()">⟲ Recarregar</button>
+          <button class="small ghost" onclick="document.getElementById('buscarRegistros').value=''; filtrarRegistros();">Limpar</button>
         </div>
 
         <div class="table-wrap card">
@@ -226,7 +295,7 @@ th{background:var(--azul);color:var(--branco)}
       <section id="contatos" class="card">
         <h2>Contatos</h2>
         <div class="row">
-          <input id="pesquisaContatoContatos" placeholder="🔍 Pesquisar contato..." oninput="renderizarContatosUI()" class="flex" />
+          <input id="pesquisaContatoContatos" placeholder="🔍 Pesquisar contato (nome ou apartamento)..." oninput="renderizarContatosUI()" class="flex" />
         </div>
 
         <div style="display:flex;gap:8px;margin-top:8px">
@@ -262,11 +331,50 @@ th{background:var(--azul);color:var(--branco)}
     </div>
   </div>
 
+  <div id="modalEditarRegistro">
+    <div class="conteudo-edicao">
+      <div class="edicao-body">
+        <h3>✏ Editar Registro</h3>
+
+        <div>
+          <strong>Fotos atuais:</strong>
+          <div id="fotosAtuaisEdicao" class="previews" style="margin-top:8px"></div>
+        </div>
+
+        <div>
+          <strong>Novas fotos:</strong>
+          <div id="previewEdicao" class="previews" style="margin-top:8px"></div>
+        </div>
+
+        <div>
+          <video id="videoEdicao" autoplay playsinline style="display:none;"></video>
+        </div>
+
+        <div>
+          <canvas id="canvasEdicao" width="640" height="480" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <div class="edicao-actions">
+        <div style="margin-right:auto" class="kv">Máx. 3 imagens.</div>
+        <button onclick="abrirCameraEdicao()" class="ghost">📷 Câmera</button>
+        <button id="btnCapturarEdicao" style="display:none;" onclick="capturarFotoEdicao()" class="primary">📸 Capturar</button>
+        <button onclick="fecharModalEdicao()" class="ghost">Cancelar</button>
+        <button id="btnSalvarEdicao" onclick="salvarEdicaoRegistro(this)" class="primary">💾 Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <div id="statusBar">Status: <span id="statusText">Pronto</span></div>
 </div>
 
 <script>
-/* Configuração do Supabase */
+/* ========== Debug global ========== */
+window.addEventListener('error', function(ev){
+  console.error('Erro global capturado:', ev.error || ev.message || ev);
+});
+
+/* ========== Supabase config ========== */
 const SUPABASE_URL = "https://vdxiphzxdpwggydezbzw.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkeGlwaHp4ZHB3Z2d5ZGV6Ynp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5MDQxMTQsImV4cCI6MjA3ODQ4MDExNH0.IQLGlZlcgEw8-E_TbnfZwrzs8eJt0Ky4WtYrmyCr1aI";
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -275,12 +383,22 @@ const BUCKET_FOTOS = "fotos";
 const BUCKET_ASSINATURAS = "assinaturas";
 const DELETE_PASSWORD = "12345";
 
+/* ========== State ========== */
 let contatos = [];
 let registros = [];
+let contatosExcluidos = [];
 let cameraStream = null;
 let fotosTemporarias = [];
 let registroLocalParaAssinatura = null;
+let contatoEmEdicao = null;
 
+let registroEmEdicao = null;
+let fotosExistentesEdicao = [];
+let fotosParaRemover = [];
+let fotosNovasEdicao = [];
+let streamEdicao = null;
+
+/* ========== Util ========== */
 function setStatus(msg){ const el = document.getElementById("statusText"); if (el) el.textContent = msg; }
 
 function mostrarAba(id){
@@ -292,8 +410,13 @@ function mostrarAba(id){
 
 function alternarTema(){
   document.body.classList.toggle('tema-escuro');
+  const theme = document.body.classList.contains('tema-escuro') ? 'escuro' : 'claro';
+  try { localStorage.setItem('acapulco_tema_v2', theme); } catch(e){}
+  const btn = document.getElementById('toggleTemaBtn');
+  if (btn) btn.textContent = theme === 'escuro' ? '☀️ Claro' : '🌗 Tema';
 }
 
+/* Helper de Loading de Botão */
 function setBtnLoading(btn, isLoading, originalText = "") {
   if (!btn) return;
   if (isLoading) {
@@ -306,38 +429,55 @@ function setBtnLoading(btn, isLoading, originalText = "") {
   }
 }
 
-/* Login */
+/* ========== Login ========== */
 const LOGIN_USER = "admin";
 const LOGIN_PASS = "Ckl253115@";
 
 function fazerLogin(){
-  const u = document.getElementById("loginUser").value.trim();
-  const p = document.getElementById("loginPass").value;
-  if (u === LOGIN_USER && p === LOGIN_PASS){
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    setStatus("Logado como administrador");
-    carregarContatos();
-    carregarRegistrosRemotos();
-  } else {
-    alert("Usuário ou senha inválidos.");
+  try {
+    const u = document.getElementById("loginUser").value.trim();
+    const p = document.getElementById("loginPass").value;
+    if (u === LOGIN_USER && p === LOGIN_PASS){
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      setStatus("Logado como administrador");
+      carregarContatos();
+      carregarRegistrosRemotos();
+    } else {
+      alert("Usuário ou senha inválidos.");
+    }
+  } catch (err) {
+    console.error(err);
   }
 }
 
 document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('btnEntrar').addEventListener('click', fazerLogin);
+  ['loginUser','loginPass'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { e.preventDefault(); fazerLogin(); }
+    });
+  });
+  try { conectarRealtime(); } catch(e){}
+  
+  // Load Theme
+  const saved = localStorage.getItem('acapulco_tema_v2');
+  if (saved === 'escuro') {
+    document.body.classList.add('tema-escuro');
+    document.getElementById('toggleTemaBtn').textContent = '☀️ Claro';
+  }
 });
 
-/* Contatos via Supabase */
+/* ========== Contatos ========== */
 async function carregarContatos(){
   try {
     setStatus("Carregando contatos...");
-    const { data, error } = await db.from('contatos').select('*').order('id', { ascending: false });
+    const { data, error } = await db.from('contatos').select('*').order('id',{ascending:false});
     if (error) throw error;
-    contatos = data || [];
+    contatos = (data || []).map(x => ({ supabase_id: x.id, nome: x.nome, telefone: x.telefone, apartamento: x.apartamento }));
     renderizarContatosUI();
     setStatus("Contatos carregados");
-  } catch (err) { setStatus("Erro ao carregar contatos"); }
+  } catch (err) { console.warn(err); setStatus("Erro ao carregar contatos"); }
 }
 
 function renderizarContatosUI(){
@@ -347,12 +487,17 @@ function renderizarContatosUI(){
   const termo = (document.getElementById("pesquisaContatoContatos")?.value || "").toLowerCase();
 
   contatos.forEach(c => {
-    if (termo && !c.nome.toLowerCase().includes(termo)) return;
+    if (c.supabase_id && contatosExcluidos.includes(c.supabase_id)) return;
+    const nomeLower = (c.nome || "").toLowerCase();
+    const aptLower  = (c.apartamento || "").toLowerCase();
+    if (termo && !nomeLower.includes(termo) && !aptLower.includes(termo)) return;
+
     const tr = document.createElement("tr");
     tr.innerHTML = `<td>${c.nome}</td><td>${c.telefone||"-"}</td><td>${c.apartamento||"-"}</td>
       <td>
-        <button class="small" onclick="compartilharContatoWhats('${c.id}')">📲</button>
-        <button class="small" onclick="excluirContato('${c.id}')">🗑</button>
+        <button class="small" onclick="editarContatoLocal('${c.supabase_id}')">✏</button>
+        <button class="small" onclick="compartilharContatoWhats('${c.supabase_id}')">📲</button>
+        <button class="small" onclick="excluirContatoProtegido('${c.supabase_id}')">🗑</button>
       </td>`;
     tbody.appendChild(tr);
   });
@@ -364,8 +509,9 @@ function atualizarSelectContatos(){
   if (!sel) return;
   sel.innerHTML = "<option value=''>Selecione um contato</option>";
   contatos.forEach(c => {
+    if (c.supabase_id && contatosExcluidos.includes(c.supabase_id)) return;
     const opt = document.createElement("option");
-    opt.value = c.id;
+    opt.value = c.supabase_id;
     opt.textContent = `${c.nome}${c.apartamento ? ' - '+c.apartamento : ''}`;
     sel.appendChild(opt);
   });
@@ -376,19 +522,21 @@ function filtrarContatos(){
   const sel = document.getElementById("contatoSelect");
   sel.innerHTML = "<option value=''>Selecione um contato</option>";
   contatos.forEach(c => {
-    if (!termo || c.nome.toLowerCase().includes(termo)) {
+    if (!termo || c.nome.toLowerCase().includes(termo) || (c.apartamento||"").toLowerCase().includes(termo)) {
       const opt = document.createElement("option");
-      opt.value = c.id;
+      opt.value = c.supabase_id;
       opt.textContent = `${c.nome}${c.apartamento ? ' - '+c.apartamento : ''}`;
       sel.appendChild(opt);
     }
   });
 }
 
-function compartilharContatoWhats(id){
-  const c = contatos.find(x => x.id == id);
+function compartilharContatoWhats(supabaseId){
+  const c = contatos.find(x => x.supabase_id == supabaseId);
   if (!c || !c.telefone) return alert("Contato sem telefone cadastrado.");
-  const msg = `Olá ${c.nome}! Chegou uma correspondência/encomenda para você na Portaria Acapulco.`;
+  const hora = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const entrega = (document.getElementById("descricao")?.value || "").trim();
+  const msg = `Olá ${c.nome}! Chegou entrega${entrega ? ' '+entrega : ''} para você às ${hora}. Atenciosamente, Portaria Acapulco`;
   window.open(`https://wa.me/55${c.telefone.replace(/\D/g, "")}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
@@ -398,35 +546,67 @@ async function salvarContato(btnRef){
   const apartamento = document.getElementById("apartamento").value.trim();
 
   if (!nome) return alert("Informe o nome!");
-  setBtnLoading(btnRef, true, "💾 Salvar Contato");
   
+  // Evitar duplicidade exata
+  if (!contatoEmEdicao && contatos.some(c => c.nome.toLowerCase() === nome.toLowerCase() && (c.apartamento||"").toLowerCase() === apartamento.toLowerCase())){
+    return alert("Contato com mesmo nome e apartamento já existe.");
+  }
+
+  setBtnLoading(btnRef, true, "💾 Salvar Contato");
   try {
-    const { error } = await db.from('contatos').insert([{ nome, telefone, apartamento }]);
-    if (error) throw error;
+    if (contatoEmEdicao){
+      const { data, error } = await db.from('contatos').update({ nome, telefone, apartamento }).eq('id', contatoEmEdicao).select();
+      if (error) throw error;
+      const c = contatos.find(x => x.supabase_id == contatoEmEdicao);
+      if (c && data[0]) { Object.assign(c, data[0]); }
+    } else {
+      const { data, error } = await db.from('contatos').insert([{ nome, telefone, apartamento }]).select().single();
+      if (error) throw error;
+      contatos.unshift({ supabase_id: data.id, nome: data.nome, telefone: data.telefone, apartamento: data.apartamento });
+    }
+
     document.getElementById("nome").value=""; document.getElementById("telefone").value=""; document.getElementById("apartamento").value="";
-    await carregarContatos();
+    contatoEmEdicao = null;
+    renderizarContatosUI();
     setStatus("Contato salvo");
-  } catch (err) { alert("Erro ao salvar."); } finally { setBtnLoading(btnRef, false); }
+  } catch (err) {
+    alert("Erro ao salvar contato."); console.error(err);
+  } finally {
+    setBtnLoading(btnRef, false);
+  }
 }
 
-async function excluirContato(id){
-  if (prompt("Senha para excluir:") !== DELETE_PASSWORD) return alert("Senha incorreta.");
+function editarContatoLocal(id){
+  const c = contatos.find(x => x.supabase_id == id);
+  if (!c) return;
+  document.getElementById("nome").value = c.nome;
+  document.getElementById("telefone").value = c.telefone || "";
+  document.getElementById("apartamento").value = c.apartamento || "";
+  contatoEmEdicao = id;
+}
+
+async function excluirContatoProtegido(id){
+  if (prompt("Digite a senha:") !== DELETE_PASSWORD) return alert("Senha incorreta.");
+  if (!confirm("Confirmar exclusão?")) return;
   try {
-    const { error } = await db.from('contatos').delete().eq('id', id);
-    if (error) throw error;
-    await carregarContatos();
-  } catch(e){ alert("Erro ao excluir"); }
+    await db.from('contatos').delete().eq('id', id);
+    contatos = contatos.filter(c => c.supabase_id != id);
+    renderizarContatosUI();
+  } catch(e) { alert("Erro ao excluir."); }
 }
 
-/* Câmera */
+/* ========== Câmera ========== */
 async function abrirCamera(){
   const video = document.getElementById("video");
+  const btn = document.getElementById("capturarBtn");
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } } });
     video.srcObject = cameraStream;
     video.style.display = "block";
-    document.getElementById("capturarBtn").style.display = "block";
-  } catch (err) { alert("Erro ao acessar câmera."); }
+    btn.style.display = "block";
+  } catch (err) {
+    alert("Erro ao acessar câmera.");
+  }
 }
 
 function capturarFoto(){
@@ -447,67 +627,67 @@ function capturarFoto(){
 function fecharCamera(){
   const video = document.getElementById("video");
   if (cameraStream) { cameraStream.getTracks().forEach(t=>t.stop()); cameraStream = null; }
-  video.srcObject = null;
+  video.srcObject = null; // Impede que a câmera fique presa em background
   video.style.display = "none"; document.getElementById("capturarBtn").style.display = "none";
 }
 
+/* ========== Upload Storage ========== */
 async function uploadBase64ToStorage(base64, bucket){
   if (!base64) return null;
   try {
     const nome = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.png`;
+    // Método otimizado (evita travamentos em Uint8Array com arquivos pesados)
     const res = await fetch(base64);
     const blob = await res.blob();
+    
     const { error } = await db.storage.from(bucket).upload(nome, blob, { contentType: 'image/png' });
     if (error) return null;
     return db.storage.from(bucket).getPublicUrl(nome).data.publicUrl;
-  } catch (err) { return null; }
+  } catch (err) { console.error("Upload erro:", err); return null; }
 }
 
-/* Registros via Supabase */
+function extrairNomeArquivoDeUrl(url){
+  try { return new URL(url).pathname.split('/').pop(); } catch(e){ return null; }
+}
+
+/* ========== Registros ========== */
 async function registrarCorrespondencia(btnRef){
   const contatoId = document.getElementById("contatoSelect").value;
   const entrega = document.getElementById("descricao").value;
-  if (!contatoId || !entrega) return alert("Preencha todos os campos!");
+  if (!contatoId || !entrega || !fotosTemporarias.length) return alert("Preencha todos os campos e tire pelo menos 1 foto!");
 
-  const contato = contatos.find(c => c.id == contatoId);
+  const contato = contatos.find(c => c.supabase_id == contatoId);
   setBtnLoading(btnRef, true, "💾 Salvar Registro");
   
   try {
+    setStatus("Enviando fotos...");
     const urls = [];
     for (let i=0; i<Math.min(3, fotosTemporarias.length); i++){
       urls.push(await uploadBase64ToStorage(fotosTemporarias[i], BUCKET_FOTOS));
     }
 
     const payload = {
-      contato_id: parseInt(contatoId),
-      nome: contato.nome,
-      entrega: entrega,
-      foto_url: urls[0] || null,
-      foto_url_2: urls[1] || null,
-      foto_url_3: urls[2] || null
+      contato_id: contatoId, nome: contato.nome, entrega,
+      foto_url: urls[0]||null, foto_url_2: urls[1]||null, foto_url_3: urls[2]||null,
+      data: new Date().toISOString(), status: "Pendente"
     };
 
-    const { error } = await db.from('registros').insert([payload]);
+    const { data, error } = await db.from('registros').insert([payload]).select().single();
     if (error) throw error;
+
+    registros.unshift({ supabase_id: data.id, contato_supabase_id: data.contato_id, nome: data.nome, entrega: data.entrega, foto_url: data.foto_url, foto_url_2: data.foto_url_2, foto_url_3: data.foto_url_3, data: data.data, status: data.status });
     
     fotosTemporarias = [];
     document.getElementById("fotoPreview").innerHTML = "";
     document.getElementById("descricao").value = "";
     fecharCamera();
-    await carregarRegistrosRemotos();
-    setStatus("Registro salvo!");
-  } catch (e) { alert("Erro ao salvar."); } finally { setBtnLoading(btnRef, false); }
-}
-
-async function carregarRegistrosRemotos(){
-  try{
-    setStatus("Carregando registros...");
-    const { data, error } = await db.from('registros').select('*').order('id', { ascending: false });
-    if (error) throw error;
-    registros = data || [];
     atualizarTabelaRegistrosUI();
-    setStatus("Registros carregados");
-  }catch(e){ console.error(e); }
+    setStatus("Registro salvo!");
+  } catch (e) {
+    alert("Erro ao salvar."); console.error(e);
+  } finally {
+    setBtnLoading(btnRef, false);
+  }
 }
 
 function atualizarTabelaRegistrosUI(){
@@ -518,35 +698,73 @@ function atualizarTabelaRegistrosUI(){
     const urls = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
     const fotosHtml = urls.length ? urls.map(u => `<img class="preview foto" src="${u}">`).join("") : "-";
     const assinHtml = r.assinatura_url ? `<img class="preview assinatura" src="${r.assinatura_url}">` : "-";
+    const datasHtml = r.baixa_em ? `${new Date(r.data).toLocaleString()}<br><small>Baixa: ${new Date(r.baixa_em).toLocaleString()}</small>` : new Date(r.data).toLocaleString();
     
     const tr = document.createElement("tr");
+    tr.dataset.supabaseId = r.supabase_id;
     tr.innerHTML = `
-      <td>${r.nome}</td><td>${r.entrega}</td><td>${fotosHtml}</td><td>${assinHtml}</td><td>${r.data ? new Date(r.data).toLocaleString() : '-'}</td><td>${r.status||'Pendente'}</td>
+      <td>${r.nome}</td><td>${r.entrega}</td><td>${fotosHtml}</td><td>${assinHtml}</td><td>${datasHtml}</td><td>${r.status}</td>
       <td>
-        ${!r.assinatura_url ? `<button class="small" onclick="abrirAssinaturaLocal('${r.id}')">Assinar ✍</button>` : ''}
-        <button class="small" onclick="excluirRegistro('${r.id}')">🗑</button>
+        <div class="menu-baixa-container" style="position:relative; display:inline-block">
+          <button class="small" onclick="toggleMenuBaixa(this)">Baixar ⬇</button>
+          <div class="menu-baixa-opcoes" style="display:none; position:absolute; top:100%; right:0; background:#fff; border:1px solid #ccc; border-radius:4px; z-index:100; padding:4px;">
+            <button class="small ghost" style="width:100%; margin-bottom:4px" onclick="acaoBaixaAssinarNaTela('${r.supabase_id}', this)">Assinar Tela</button>
+            <button class="small ghost" style="width:100%" onclick="acaoBaixaGerarLink('${r.supabase_id}', this)">Gerar Link</button>
+          </div>
+        </div>
+        ${!r.assinatura_url ? `<button class="small" onclick="abrirEdicaoRegistro('${r.supabase_id}')">✏</button>` : `<button class="small" disabled>✏</button>`}
+        <button class="small" onclick="excluirRegistroProtegido('${r.supabase_id}')">🗑</button>
       </td>`;
     tbody.appendChild(tr);
   });
 }
 
-function extrairNomeArquivoDeUrl(url){
-  try { return new URL(url).pathname.split('/').pop(); } catch(e){ return null; }
+function toggleMenuBaixa(btn){
+  const m = btn.nextElementSibling;
+  const isVis = m.style.display === 'block';
+  document.querySelectorAll('.menu-baixa-opcoes').forEach(el=>el.style.display='none');
+  m.style.display = isVis ? 'none' : 'block';
 }
 
-async function excluirRegistro(id){
+function acaoBaixaAssinarNaTela(id, btn){ abrirAssinaturaLocal(id); btn.parentElement.style.display='none'; }
+
+function acaoBaixaGerarLink(id, btn){
+  const r = registros.find(x=>x.supabase_id==id);
+  const c = contatos.find(x=>x.supabase_id==r.contato_supabase_id);
+  const link = window.location.origin + window.location.pathname.replace(/[^\/]*$/, "") + "baixa.html?registro=" + id;
+  if(c && c.telefone) window.open(`https://wa.me/55${c.telefone.replace(/\D/g,"")}?text=Assine a retirada: ${encodeURIComponent(link)}`);
+  else alert(`Copie e envie:\n${link}`);
+  btn.parentElement.style.display='none';
+}
+
+async function excluirRegistroProtegido(id){
   if(prompt("Senha para excluir:") !== DELETE_PASSWORD) return alert("Senha incorreta");
-  const r = registros.find(x => x.id == id);
+  if(!confirm("Confirmar exclusão?")) return;
+  const r = registros.find(x=>x.supabase_id == id);
   try{
-    const { error } = await db.from('registros').delete().eq('id', id);
-    if (error) throw error;
-    
+    await db.from('registros').delete().eq('id', id);
+    // Limpar fotos do Storage
     const urls = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
     if(urls.length) await db.storage.from(BUCKET_FOTOS).remove(urls.map(extrairNomeArquivoDeUrl));
     if(r.assinatura_url) await db.storage.from(BUCKET_ASSINATURAS).remove([extrairNomeArquivoDeUrl(r.assinatura_url)]);
-
-    await carregarRegistrosRemotos();
+    
+    registros = registros.filter(x=>x.supabase_id != id);
+    atualizarTabelaRegistrosUI();
   }catch(e){ alert("Erro ao excluir."); }
+}
+
+async function carregarRegistrosRemotos(){
+  try{
+    setStatus("Carregando registros...");
+    const { data } = await db.from('registros').select('*').order('id',{ascending:false}).limit(200);
+    registros = (data||[]).map(r=>({
+      supabase_id: r.id, contato_supabase_id: r.contato_id, nome: r.nome, entrega: r.entrega,
+      foto_url: r.foto_url, foto_url_2: r.foto_url_2, foto_url_3: r.foto_url_3,
+      assinatura_url: r.assinatura_url, data: r.data, baixa_em: r.baixa_em, status: r.status||'Pendente'
+    }));
+    atualizarTabelaRegistrosUI();
+    setStatus("Registros carregados");
+  }catch(e){}
 }
 
 function filtrarRegistros(){
@@ -556,7 +774,7 @@ function filtrarRegistros(){
   });
 }
 
-/* Assinatura */
+/* ========== Assinatura ========== */
 function abrirAssinaturaLocal(id){
   registroLocalParaAssinatura = id;
   document.getElementById("modalAssinatura").style.display = "flex";
@@ -565,9 +783,16 @@ function abrirAssinaturaLocal(id){
 
 function prepararCanvasAssinatura(){
   const c = document.getElementById("assinaturaCanvas");
-  c.width = 600; c.height = 300;
+  const modal = document.querySelector('#modalAssinatura .conteudo-assinatura');
+  const rect = modal ? modal.getBoundingClientRect() : {width: window.innerWidth, height: window.innerHeight};
+  
+  c.style.width = Math.max(rect.width - 40, 300) + "px";
+  c.style.height = Math.max(rect.height - 150, 200) + "px";
+  c.width = parseInt(c.style.width);
+  c.height = parseInt(c.style.height);
+
   const ctx = c.getContext("2d");
-  ctx.lineWidth = 3; ctx.strokeStyle = "#111";
+  ctx.lineWidth = 3; ctx.lineJoin = ctx.lineCap = "round"; ctx.strokeStyle = "#111";
   
   let drawing = false, last = {x:0,y:0};
   const getPos = (e) => {
@@ -576,31 +801,127 @@ function prepararCanvasAssinatura(){
     return { x: t.clientX - r.left, y: t.clientY - r.top };
   };
 
-  c.onpointerdown = e => { drawing = true; last = getPos(e); };
+  c.onpointerdown = e => { drawing = true; last = getPos(e); c.setPointerCapture(e.pointerId); };
   c.onpointermove = e => { if(!drawing)return; const p = getPos(e); ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); last = p; };
-  c.onpointerup = () => drawing = false;
+  c.onpointerup = c.onpointercancel = e => drawing = false;
+  c.style.touchAction = "none";
 }
 
 function limparAssinatura(){ prepararCanvasAssinatura(); }
-function fecharModalAssinatura(){ document.getElementById("modalAssinatura").style.display = "none"; }
+function fecharModalAssinatura(){ document.getElementById("modalAssinatura").style.display = "none"; registroLocalParaAssinatura = null; }
 
 async function salvarAssinatura(btnRef){
+  const r = registros.find(x=>x.supabase_id == registroLocalParaAssinatura);
+  if(!r || r.assinatura_url) return alert("Inválido ou já assinado.");
+  
   setBtnLoading(btnRef, true, "Salvar Assinatura");
   try {
     const b64 = document.getElementById("assinaturaCanvas").toDataURL("image/png");
     const url = await uploadBase64ToStorage(b64, BUCKET_ASSINATURAS);
+    const baixa = new Date().toISOString();
+    await db.from('registros').update({ assinatura_url: url, status: 'Entregue', baixa_em: baixa }).eq('id', r.supabase_id);
     
-    const { error } = await db.from('registros').update({
-      assinatura_url: url,
-      baixa_em: new Date().toISOString(),
-      status: 'Entregue'
-    }).eq('id', registroLocalParaAssinatura);
-
-    if (error) throw error;
-    await carregarRegistrosRemotos();
+    r.assinatura_url = url; r.status = "Entregue"; r.baixa_em = baixa;
+    atualizarTabelaRegistrosUI();
     fecharModalAssinatura();
   } catch(e){ alert("Erro ao salvar assinatura."); } finally { setBtnLoading(btnRef, false); }
 }
+
+/* ========== Edição ========== */
+function abrirEdicaoRegistro(id){
+  const r = registros.find(x=>x.supabase_id == id);
+  if(!r || r.assinatura_url) return;
+  registroEmEdicao = r;
+  fotosExistentesEdicao = [r.foto_url, r.foto_url_2, r.foto_url_3].filter(Boolean);
+  fotosNovasEdicao = []; fotosParaRemover = [];
+  document.getElementById("modalEditarRegistro").style.display = "flex";
+  renderizarFotosEdicao();
+}
+
+function renderizarFotosEdicao(){
+  const div = document.getElementById("fotosAtuaisEdicao");
+  div.innerHTML = "";
+  fotosExistentesEdicao.forEach((url, i) => {
+    div.innerHTML += `<div class="foto-edicao"><img src="${url}"><button onclick="removerFotoEdicao(${i})">✖</button></div>`;
+  });
+}
+
+function removerFotoEdicao(i){
+  fotosParaRemover.push(extrairNomeArquivoDeUrl(fotosExistentesEdicao[i]));
+  fotosExistentesEdicao.splice(i, 1);
+  renderizarFotosEdicao();
+}
+
+async function abrirCameraEdicao(){
+  try {
+    streamEdicao = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}}});
+    const v = document.getElementById("videoEdicao");
+    v.srcObject = streamEdicao; v.style.display="block"; document.getElementById("btnCapturarEdicao").style.display="block";
+    v.scrollIntoView({behavior:'smooth'});
+  }catch(e){ alert("Erro câmera."); }
+}
+
+function capturarFotoEdicao(){
+  const canvas = document.getElementById("canvasEdicao"), v = document.getElementById("videoEdicao");
+  canvas.getContext("2d").drawImage(v,0,0,canvas.width,canvas.height);
+  const b64 = canvas.toDataURL("image/png");
+  fotosNovasEdicao.push(b64);
+  
+  const div = document.getElementById("previewEdicao");
+  const cont = document.createElement("div"); cont.className="foto-edicao";
+  cont.innerHTML = `<img src="${b64}"><button>✖</button>`;
+  cont.querySelector("button").onclick = () => { fotosNovasEdicao.splice(fotosNovasEdicao.indexOf(b64),1); cont.remove(); };
+  div.appendChild(cont);
+}
+
+function fecharModalEdicao(){
+  document.getElementById("modalEditarRegistro").style.display = "none";
+  if(streamEdicao){ streamEdicao.getTracks().forEach(t=>t.stop()); streamEdicao=null; }
+  document.getElementById("videoEdicao").srcObject = null;
+  document.getElementById("videoEdicao").style.display = "none";
+  document.getElementById("btnCapturarEdicao").style.display = "none";
+  document.getElementById("previewEdicao").innerHTML = "";
+}
+
+async function salvarEdicaoRegistro(btnRef){
+  setBtnLoading(btnRef, true, "💾 Salvar");
+  try{
+    let fotosAtual = [...fotosExistentesEdicao];
+    for (let i=0; i<fotosNovasEdicao.length && fotosAtual.length < 3; i++){
+      fotosAtual.push(await uploadBase64ToStorage(fotosNovasEdicao[i], BUCKET_FOTOS));
+    }
+    const up = { foto_url: fotosAtual[0]||null, foto_url_2: fotosAtual[1]||null, foto_url_3: fotosAtual[2]||null };
+    await db.from("registros").update(up).eq("id", registroEmEdicao.supabase_id);
+    
+    // Limpar storage antigo
+    if(fotosParaRemover.length) await db.storage.from(BUCKET_FOTOS).remove(fotosParaRemover);
+    Object.assign(registroEmEdicao, up);
+    atualizarTabelaRegistrosUI();
+    fecharModalEdicao();
+  }catch(e){ alert("Erro ao editar."); } finally { setBtnLoading(btnRef, false); }
+}
+
+/* ========== Realtime (Reconexão Segura) ========== */
+function conectarRealtime() {
+  try {
+    const channelA = db.channel('public:contatos').on('postgres_changes', { event: '*', schema: 'public', table: 'contatos' }, handleRealtimeContato).subscribe();
+    const channelB = db.channel('public:registros').on('postgres_changes', { event: '*', schema: 'public', table: 'registros' }, handleRealtimeRegistro).subscribe();
+  } catch (e) { console.warn(e); }
+}
+function handleRealtimeContato(p) { carregarContatos(); /* Simplificado para garantir sincronia correta */ }
+function handleRealtimeRegistro(p) { carregarRegistrosRemotos(); /* Simplificado para garantir sincronia correta */ }
+
+/* Fechar menus/modais globais */
+document.addEventListener('click', e => { if(!e.target.closest('.menu-baixa-container')) document.querySelectorAll('.menu-baixa-opcoes').forEach(m=>m.style.display='none'); });
+document.addEventListener('click', e => {
+  if (e.target.matches('img.preview')) {
+    const o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:22000;cursor:pointer;';
+    o.innerHTML = `<img src="${e.target.src}" style="max-width:95%;max-height:95%;border-radius:8px">`;
+    o.onclick = () => o.remove();
+    document.body.appendChild(o);
+  }
+});
 </script>
 </body>
 </html>
